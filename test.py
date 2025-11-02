@@ -6,7 +6,7 @@ screen_hight = 256
 screen_width = 512
 
 screen = pygame.display.set_mode((screen_width*2, screen_hight*2))
-pygame.display.set_caption('Test')
+pygame.display.set_caption('UrsulinenCombat')
 clock = pygame.time.Clock()
 
 run = True
