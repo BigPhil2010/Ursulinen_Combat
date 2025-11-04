@@ -26,7 +26,7 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 
 #images
-sprite_sheet_image = pygame.image.load(r"recources\images\sprites\animation.png").convert_alpha()
+sprite_sheet_image = pygame.image.load(r"recources/images/sprites/animation.png").convert_alpha()
 
 #objects
 player1 = pygame.Rect((0, 0, 32, 32))
