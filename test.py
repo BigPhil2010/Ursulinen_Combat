@@ -8,6 +8,7 @@ screen_width = 512
 game_scale = 2.5
 player_height = 32
 player_width = 32
+BG = ""
 
 #setup screen
 screen = pygame.display.set_mode((screen_width*game_scale, screen_hight*game_scale))
@@ -41,8 +42,8 @@ player2 = {
 
 #plattforms
 plattforms = [
-    #[start_x, end_y, start_y, end_y]
-
+    #[start_x, start_y, end_x, end_y]
+    [62, 129, 440, 160]
 ]
 
 #colors
@@ -51,6 +52,7 @@ white = (255, 255, 255)
 
 #images
 test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/animation.png").convert_alpha()
+test_BG = pygame.image.load(r"recources/images/backgrounds/test_BG.png").convert_alpha()
 
 
 #image processing
@@ -59,6 +61,9 @@ def get_image(sheet, sprite_x, sprite_y, width, height, scale):
     image.blit(sheet, (0, 0), (sprite_x*width, sprite_y*height, sprite_x*width+width, sprite_y*height+height))
     image = pygame.transform.scale(image, (width*scale, height*scale))
     return image
+
+#set BG
+BG = get_image(test_BG, 0, 0, 512, 256, game_scale)
 
 #TEMPORARY!!!!!!!!!!!!!
 player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player_width, player_height, game_scale)
@@ -71,6 +76,7 @@ player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player_width, playe
 while run:
 
     screen.fill(white)
+    screen.blit(BG)
 
     #testing
     screen.blit(player1["sprite"], (player1["x"], player1["y"]))
