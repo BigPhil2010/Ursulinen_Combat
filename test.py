@@ -1,36 +1,57 @@
-import pygame
+import pygame    #this project runs on most versions of python 3.10
 
 pygame.init()
 
 #screensize
 screen_hight = 256
 screen_width = 512
+game_scale = 2.5
+player_height = 32
+player_width = 32
 
 #setup screen
-screen = pygame.display.set_mode((screen_width*2, screen_hight*2))
+screen = pygame.display.set_mode((screen_width*game_scale, screen_hight*game_scale))
 pygame.display.set_caption('UrsulinenCombat')
 
 #gamestates
 clock = pygame.time.Clock()
 run = True
-speed = 0.5
 
-#positions
-player1_x = 0
-player1_y = 0
-player2_x = 50
-player2_y = 50
+speed = 2*game_scale
+gravity = 3*game_scale
+jump_power = 0.5
+jump_frames = 100
+
+#player values
+player1 = {
+    "sprite": "",
+    "x": 0,
+    "y": 0,
+    "jump_frames": 0,
+    "on_floor": False
+}
+
+player2 = {
+    "sprite": "",
+    "x": 50,
+    "y": 50,
+    "jump_frames": 0,
+    "on_floor": False
+}
+
+#plattforms
+plattforms = [
+    #[start_x, end_y, start_y, end_y]
+
+]
 
 #colors
 black = (0, 0, 0)
 white = (255, 255, 255)
 
 #images
-sprite_sheet_image = pygame.image.load(r"recources/images/sprites/animation.png").convert_alpha()
+test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/animation.png").convert_alpha()
 
-#objects
-player1 = pygame.Rect((0, 0, 32, 32))
-player2 = pygame.Rect((50, 50, 32, 32))
 
 #image processing
 def get_image(sheet, sprite_x, sprite_y, width, height, scale):
@@ -39,7 +60,12 @@ def get_image(sheet, sprite_x, sprite_y, width, height, scale):
     image = pygame.transform.scale(image, (width*scale, height*scale))
     return image
 
-frame_0 = get_image(sprite_sheet_image, 7, 1, 32, 32, 2)
+#TEMPORARY!!!!!!!!!!!!!
+player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player_width, player_height, game_scale)
+player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player_width, player_height, game_scale)
+
+#def on_floor(object):
+
 
 #gameloop
 while run:
@@ -47,37 +73,55 @@ while run:
     screen.fill(white)
 
     #testing
-    screen.blit(frame_0, (player1_x, player1_y))
+    screen.blit(player1["sprite"], (player1["x"], player1["y"]))
+    screen.blit(player2["sprite"], (player2["x"], player2["y"]))
 
-    #pygame.draw.rect(screen, (255, 0, 0), player1)
-    pygame.draw.rect(screen, (0, 0, 255), player2)
-
+    #gravity
+    player1["y"] += gravity
+    player2["y"] += gravity
 
     #controlls
     key = pygame.key.get_pressed()
 
     if key[pygame.K_w]:
-        player1_y -= 1*speed
+        player1["jump_frames"] = jump_frames
     elif key[pygame.K_s]:
-        player1_y += 1*speed
+        player1["y"] += 1*speed
     elif key[pygame.K_a]:
-        player1_x -= 1*speed
+        player1["x"] -= 1*speed
     elif key[pygame.K_d]:
-        player1_x += 1*speed
+        player1["x"] += 1*speed
     
     if key[pygame.K_UP]:
-        player2.move_ip(0, -1)
+        player2["y"] -= 1*speed
     elif key[pygame.K_DOWN]:
-        player2.move_ip(0, 1)
+        player2["y"] += 1*speed
     elif key[pygame.K_LEFT]:
-        player2.move_ip(-1, 0)
+        player2["x"] -= 1*speed
     elif key[pygame.K_RIGHT]:
-        player2.move_ip(1, 0)
+        player2["x"] += 1*speed
+    
+    #jumps
+    while player1["jump_frames"] > 0 :
+        player1["y"] -= jump_power
+        player1["jump_frames"] -= 1
+    while player2["jump_frames"] > 0 :
+        player2["y"] -= jump_power
+        player2["jump_frames"] -= 1
+
+    #checks collision        [x = max(a, min(x, b))] --> hält x in einer spanne von a-b
+    player1["y"] = max(0, min(player1["y"], (screen_hight * game_scale) - (player_height * game_scale)))
+    player1["x"] = max(0, min(player1["x"], (screen_width * game_scale) - (player_width * game_scale)))
+    player2["y"] = max(0, min(player2["y"], (screen_hight * game_scale) - (player_height * game_scale)))
+    player2["x"] = max(0, min(player2["x"], (screen_width * game_scale) - (player_width * game_scale)))
 
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+    
+    if key[pygame.K_ESCAPE]:
+        run = False
     
     pygame.display.flip()
     clock.tick(60)
