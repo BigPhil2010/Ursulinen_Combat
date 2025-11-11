@@ -132,4 +132,8 @@ while run:
     pygame.display.flip()
     clock.tick(60)
 
+def sound():
+    torjubel = pygame.mixer.Sound("applaus")
+    pygame.mixer.Sound.play(torjubel)
+
 pygame.quit
