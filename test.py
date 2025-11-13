@@ -5,7 +5,7 @@ pygame.init()
 #screensize
 screen_hight = 256
 screen_width = 512
-game_scale = 2.5
+game_scale = 1
 BG = ""
 
 #setup screen
@@ -18,14 +18,15 @@ run = True
 
 speed = 2*game_scale
 gravity = 3*game_scale
-jump_power = 0.5
-jump_frames = 100
+jump_power = 1
+jump_frames = 200
 
 #player values
 player1 = {
-    "sprite": "",
-    "x": 100,
-    "y": 100,
+    "sprite": None,
+    "rect": None,
+    "start_x": 100,
+    "start_y": 50,
     "width": 32,
     "height": 32,
     "jump_frames": 0,
@@ -36,9 +37,10 @@ player1 = {
 }
 
 player2 = {
-    "sprite": "",
-    "x": 50,
-    "y": 50,
+    "sprite": None,
+    "rect": None,
+    "start_x": 100,
+    "start_y": 100,
     "width": 32,
     "height": 32,
     "jump_frames": 0,
@@ -48,36 +50,14 @@ player2 = {
     "collision_right": False
 }
 
-#plattforms
+#set rects
+player1["rect"] = pygame.Rect(player1["start_x"]*game_scale, player1["start_y"]*game_scale, player1["width"]*game_scale, player1["height"]*game_scale)
+player2["rect"] = pygame.Rect(player2["start_x"]*game_scale, player2["start_y"]*game_scale, player2["width"]*game_scale, player2["height"]*game_scale)
+
+
 plattforms = [
-    #[x, y, width, height]
-    [62, 129, 440, 160]
-]
-plattforms = [
-    {
-        "x": 0,
-        "y": -1,
-        "width": 512,
-        "height": 1
-    },
-    {
-        "x": 0,
-        "y": 257,
-        "width": 512,
-        "height": 1
-    },
-    {
-        "x": -1,
-        "y": 0,
-        "width": 1,
-        "height": 256
-    },
-    {
-        "x": 513,
-        "y": 0,
-        "width": 1,
-        "height": 256
-    }
+    pygame.Rect(62, 129, 379, 32),
+    pygame.Rect(0, 250, 500, 20)
 ]
 
 #colors
@@ -103,101 +83,119 @@ BG = get_image(test_BG, 0, 0, 512, 256, game_scale)
 player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], player1["height"], game_scale)
 player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], player2["height"], game_scale)
 
-def check_collision(obj):
-    obj_left = obj["x"]
-    obj_right = obj["x"] + obj["width"]
-    obj_top = obj["y"]
-    obj_bottom = obj["y"] + obj["height"]
 
-    # Initialisiere Kollisionsflags
-    obj["collision_top"] = False
-    obj["collision_bottom"] = False
-    obj["collision_left"] = False
-    obj["collision_right"] = False
+x = 0
+def check_player_collision(player):
+    global x
+    #keep in screen
+    player["rect"].y = max(0, min(player["rect"].y, (screen_hight * game_scale) - (player["rect"].height)))
+    player["rect"].x = max(0, min(player["rect"].x, (screen_width * game_scale) - (player["rect"].width)))
 
-    for platform in plattforms:
-        plat_left = platform["x"]
-        plat_right = platform["x"] + platform["width"]
-        plat_top = platform["y"]
-        plat_bottom = platform["y"] + platform["height"]
 
-        # Prüfe horizontale Überlappung
-        horizontal_overlap = obj_right > plat_left and obj_left < plat_right
-        vertical_overlap = obj_bottom > plat_top and obj_top < plat_bottom
+    #reset collision
+    player["collision_left"] = False
+    player["collision_right"] = False
+    player["collision_top"] = False
+    player["collision_bottom"] = False
 
-        # Oben
-        if horizontal_overlap and obj_bottom == plat_top:
-            obj["collision_bottom"] = True
+    for plattform in plattforms:
+        #check collision
+        if player["rect"].colliderect(plattform):
 
-        # Unten
-        if horizontal_overlap and obj_top == plat_bottom:
-            obj["collision_top"] = True
+            # Berechne die Überlappungen aus Sicht des Spielers
+            overlap_left = player["rect"].right - plattform.left
+            overlap_right = plattform.right - player["rect"].left
+            overlap_top = player["rect"].bottom - plattform.top
+            overlap_bottom = plattform.bottom - player["rect"].top
 
-        # Links
-        if vertical_overlap and obj_right == plat_left:
-            obj["collision_right"] = True
+            # Finde die kleinste Überlappung
+            min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
 
-        # Rechts
-        if vertical_overlap and obj_left == plat_right:
-            obj["collision_left"] = True
+            # Setze alle Richtungen erstmal zurück
+            player["collision_left"] = False
+            player["collision_right"] = False
+            player["collision_top"] = False
+            player["collision_bottom"] = False
+
+            # Bestimme Richtung aus Sicht des Spielers
+            if min_overlap == overlap_left:
+                player["collision_right"] = True
+                #player["rect"].right = plattform.left
+
+            elif min_overlap == overlap_right:
+                player["collision_left"] = True
+                #player["rect"].left = plattform.right
+
+            elif min_overlap == overlap_top:
+                player["collision_bottom"] = True
+                #player["rect"].bottom = plattform.top
+
+            elif min_overlap == overlap_bottom:
+                player["collision_top"] = True
+                #player["rect"].top = plattform.bottom
+
 
 #gameloop
 while run:
-    
-    #debug
-    print(player1["collision_bottom"])
 
     screen.fill(white)
     screen.blit(BG, (0, 0))
 
+    for plattform in plattforms:
+        pygame.draw.rect(screen, (0, 0, 0), plattform)
+
     #testing
-    screen.blit(player1["sprite"], (player1["x"], player1["y"]))
-    screen.blit(player2["sprite"], (player2["x"], player2["y"]))
+    screen.blit(player1["sprite"], (player1["rect"]))
+    #screen.blit(player2["sprite"], (player2["x"], player2["y"]))
+
+    #check all collisions
+    check_player_collision(player1)
+    check_player_collision(player2)
 
     #gravity
-    #if player1["collision_bottom"] == False:
-    #    player1["y"] += gravity
+    if player1["collision_bottom"] == False:
+        player1["rect"].y += gravity
     if player2["collision_bottom"] == False:
-        player2["y"] += gravity
+        player2["rect"].y += gravity
 
     #controlls
     key = pygame.key.get_pressed() 
 
     if key[pygame.K_w]:
         if player1["collision_top"] == False:
-            player1["jump_frames"] = jump_frames
+            if player1["collision_bottom"] == True:
+                player1["jump_frames"] = jump_frames
     elif key[pygame.K_s]:
         if player1["collision_bottom"] == False:
-            player1["y"] += 1*speed
+            player1["rect"].y += speed
     elif key[pygame.K_a]:
         if player1["collision_left"] == False:
-            player1["x"] -= 1*speed
+            player1["rect"].x -= speed
     elif key[pygame.K_d]:
         if player1["collision_right"] == False:
-            player1["x"] += 1*speed
+            player1["rect"].x += speed
     
     if key[pygame.K_UP]:
         if player2["collision_top"] == False:
-            player2["y"] -= 1*speed
+            player2["rect"].y -= 1*speed
     elif key[pygame.K_DOWN]:
         if player2["collision_bottom"] == False:
-            player2["y"] += 1*speed
+            player2["rect"].y += 1*speed
     elif key[pygame.K_LEFT]:
         if player2["collision_left"] == False:
-            player2["x"] -= 1*speed
+            player2["rect"].x -= 1*speed
     elif key[pygame.K_RIGHT]:
         if player2["collision_right"] == False:
-            player2["x"] += 1*speed
+            player2["rect"].x += 1*speed
     
     #jumps
     while player1["jump_frames"] > 0 :
-        player1["y"] -= jump_power
-        player1["jump_frames"] -= 1
+        print(player1["jump_frames"])
+        player1["rect"].y -= jump_power
+        player1["jump_frames"] -= 0.5
     while player2["jump_frames"] > 0 :
-        player2["y"] -= jump_power
+        player2["rect"].y -= jump_power
         player2["jump_frames"] -= 1
-
-    check_collision(player1)
 
     #event handler
     for event in pygame.event.get():
