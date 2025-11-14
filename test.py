@@ -9,7 +9,7 @@ pygame.init()
 #screensize
 screen_hight = 256
 screen_width = 512
-game_scale = 1
+game_scale = 2
 BG = None
 
 #setup screen
@@ -181,11 +181,25 @@ def check_input(player):
         if player["collision_right"] == False:
             player["rect"].x += speed*player["speed"]
 
+def scale_plattforms(plattforms):
+    scaled = []
+    for plattform in plattforms:
+        scaled_x = plattform.x * game_scale
+        scaled_y = plattform.y * game_scale
+        scaled_w = plattform.w * game_scale
+        scaled_h = plattform.h * game_scale
+
+        scaled.append(pygame.Rect(scaled_x, scaled_y, scaled_w, scaled_h))
+    return scaled
+
 
 #########################  UPDATE #########################
 
 #set BG
 BG = get_image(test_BG, 0, 0, 512, 256, game_scale)
+
+#scale up plattforms
+plattforms = scale_plattforms(plattforms)
 
 #TEMPORARY!!!!!!!!!!!!!
 player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], player1["height"], game_scale)
