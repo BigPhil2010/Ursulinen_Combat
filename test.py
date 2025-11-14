@@ -20,6 +20,10 @@ pygame.display.set_caption('UrsulinenCombat')
 clock = pygame.time.Clock()
 run = True
 
+#setup FPS & delta time
+FPS = 60
+last_time = time.time()
+
 #movement norms
 speed = 2 * game_scale
 gravity = 3 * game_scale
@@ -152,12 +156,12 @@ def toggle_num(x):
     else:
         return abs(x)
 
-def apply_gravity(object):
+def apply_gravity(object, delta):
     global gravity
     if object["collision_bottom"] == False and gravity*object["gravity"] == abs(gravity*object["gravity"]):
-        object["rect"].y += gravity*object["gravity"]
+        object["rect"].y += gravity*object["gravity"] * delta
     elif object["collision_top"] == False and gravity*object["gravity"] != abs(gravity*object["gravity"]):
-        object["rect"].y += gravity*object["gravity"]
+        object["rect"].y += gravity*object["gravity"] * delta
 
 def jump(object):
     if object["jump_frames_count"] > 0:
@@ -165,7 +169,7 @@ def jump(object):
         if object["jump_frames_count"] == 1:
             object["gravity"] = abs(object["gravity"]/object["jump_power"])
 
-def check_input(player):
+def check_input(player, delta):
     key = pygame.key.get_pressed() 
     key_just = pygame.key.get_just_pressed() 
 
@@ -176,10 +180,10 @@ def check_input(player):
                 player["jump_frames_count"] = player["jump_frames"]
     elif key[player["keyset"]["left"]]:
         if player["collision_left"] == False:
-            player["rect"].x -= speed*player["speed"]
+            player["rect"].x -= speed*player["speed"] * delta
     elif key[player["keyset"]["right"]]:
         if player["collision_right"] == False:
-            player["rect"].x += speed*player["speed"]
+            player["rect"].x += speed*player["speed"] * delta
 
 def scale_plattforms(plattforms):
     scaled = []
@@ -209,6 +213,11 @@ player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], p
 ######################### GAMELOOP #########################
 
 while run:
+    #messure delta time
+    delta = time.time() - last_time
+    delta *= FPS
+    last_time = time.time()
+
     #reset screen
     screen.fill(white)
     screen.blit(BG, (0, 0))
@@ -226,12 +235,12 @@ while run:
     check_player_collision(player2)
 
     #gravity
-    apply_gravity(player1)
-    apply_gravity(player2)
+    apply_gravity(player1, delta)
+    apply_gravity(player2, delta)
 
     #controlls
-    check_input(player1)
-    check_input(player2)
+    check_input(player1, delta)
+    check_input(player2, delta)
     
     #jumps
     jump(player1)
@@ -244,6 +253,6 @@ while run:
             run = False
     
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(FPS)
 
 pygame.quit
