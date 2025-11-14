@@ -1,4 +1,5 @@
 import pygame    #this project runs on most versions of python 3.10
+import time
 
 pygame.init()
 
@@ -33,7 +34,8 @@ player1 = {
     "collision_top": False,
     "collision_bottom": False,
     "collision_left": False,
-    "collision_right": False
+    "collision_right": False,
+    "gravity": 1,
 }
 
 player2 = {
@@ -84,9 +86,7 @@ player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], p
 player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], player2["height"], game_scale)
 
 
-x = 0
 def check_player_collision(player):
-    global x
     #keep in screen
     player["rect"].y = max(0, min(player["rect"].y, (screen_hight * game_scale) - (player["rect"].height)))
     player["rect"].x = max(0, min(player["rect"].x, (screen_width * game_scale) - (player["rect"].width)))
@@ -120,20 +120,23 @@ def check_player_collision(player):
             # Bestimme Richtung aus Sicht des Spielers
             if min_overlap == overlap_left:
                 player["collision_right"] = True
-                #player["rect"].right = plattform.left
 
             elif min_overlap == overlap_right:
                 player["collision_left"] = True
-                #player["rect"].left = plattform.right
 
             elif min_overlap == overlap_top:
                 player["collision_bottom"] = True
-                #player["rect"].bottom = plattform.top
 
             elif min_overlap == overlap_bottom:
                 player["collision_top"] = True
-                #player["rect"].top = plattform.bottom
 
+def toggle_num(x):
+    if x == abs(x):
+        print(-x)
+        return -x
+    else:
+        print(abs(x))
+        return abs(x)
 
 #gameloop
 while run:
@@ -153,18 +156,24 @@ while run:
     check_player_collision(player2)
 
     #gravity
-    if player1["collision_bottom"] == False:
+    if player1["collision_bottom"] == False and gravity == abs(gravity):
+        player1["rect"].y += gravity
+    elif player1["collision_top"] == False and gravity != abs(gravity):
         player1["rect"].y += gravity
     if player2["collision_bottom"] == False:
         player2["rect"].y += gravity
 
     #controlls
     key = pygame.key.get_pressed() 
+    key_just = pygame.key.get_just_pressed() 
 
-    if key[pygame.K_w]:
+    if key_just[pygame.K_w]:
         if player1["collision_top"] == False:
             if player1["collision_bottom"] == True:
-                player1["jump_frames"] = jump_frames
+                #player1["jump_frames"] = jump_frames
+                gravity = toggle_num(gravity)
+                player1["jump_frames"] = 20
+
     elif key[pygame.K_s]:
         if player1["collision_bottom"] == False:
             player1["rect"].y += speed
@@ -189,13 +198,11 @@ while run:
             player2["rect"].x += 1*speed
     
     #jumps
-    while player1["jump_frames"] > 0 :
-        print(player1["jump_frames"])
-        player1["rect"].y -= jump_power
-        player1["jump_frames"] -= 0.5
-    while player2["jump_frames"] > 0 :
-        player2["rect"].y -= jump_power
-        player2["jump_frames"] -= 1
+    if player1["jump_frames"] > 0:
+        player1["jump_frames"] -= 1
+        if player1["jump_frames"] == 1:
+            gravity = toggle_num(gravity)
+    
 
     #event handler
     for event in pygame.event.get():
