@@ -20,6 +20,9 @@ pygame.display.set_caption('UrsulinenCombat')
 clock = pygame.time.Clock()
 run = True
 
+#timer
+timer = 180
+
 #setup FPS & delta time
 FPS = 60
 last_time = time.time()
@@ -43,6 +46,7 @@ keyset2 = {
 
 #player values
 player1 = {
+    "score": 0,
     "sprite": None,
     "keyset": keyset1,
     "rect": None,
@@ -62,6 +66,7 @@ player1 = {
 }
 
 player2 = {
+    "score": 0,
     "sprite": None,
     "keyset": keyset2,
     "rect": None,
@@ -98,9 +103,13 @@ plattforms = [
 black = (0, 0, 0)
 white = (255, 255, 255)
 
+#load fonts
+pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 15*game_scale) 
+
 #load images
-test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/animation.png").convert_alpha()
-test_BG = pygame.image.load(r"recources/images/backgrounds/test_BG.png").convert_alpha()
+test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/png/animation.png").convert_alpha()
+test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").convert_alpha()
+test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
 
 
 ######################### FUNCTIONS #########################
@@ -196,11 +205,37 @@ def scale_plattforms(plattforms):
         scaled.append(pygame.Rect(scaled_x, scaled_y, scaled_w, scaled_h))
     return scaled
 
+def text_to_img(text, font, color, width, height):
+    img = pygame.Surface((width * game_scale, height * game_scale), pygame.SRCALPHA).convert_alpha()
+    font_img = font.render(str(text), True, color)
+    font_width = font_img.get_width()
+    font_height = font_img.get_height()
+    font_x = (width * game_scale - font_width)/2
+    font_y = (height * game_scale - font_height)/2
+    img.fill((0, 0, 255))
+    img.blit(font_img, (font_x, font_y))
+    return img
+
+def timer_to_str(time):
+    min = 0
+    sec = time
+
+    while sec >= 60:
+        min += 1
+        sec -= 60
+    
+    if len(str(sec)) == 1:
+        return str(min) + ":0" + str(sec)
+    else:
+        return str(min) + ":" + str(sec)
+
 
 #########################  UPDATE #########################
 
-#set BG
+
+#set BG & OL
 BG = get_image(test_BG, 0, 0, 512, 256, game_scale)
+OL = get_image(test_overlay, 0, 0, 512, 256, game_scale)
 
 #scale up plattforms
 plattforms = scale_plattforms(plattforms)
@@ -229,6 +264,12 @@ while run:
     #draw players
     screen.blit(player1["sprite"], (player1["rect"]))
     screen.blit(player2["sprite"], (player2["rect"]))
+
+    #draw OL
+    screen.blit(OL, (0, 0))
+    screen.blit(text_to_img(player1["score"], pixelfont, black, 32, 32), (0*game_scale,0))
+    screen.blit(text_to_img(player2["score"], pixelfont, black, 32, 32), (480*game_scale,0))
+    screen.blit(text_to_img(timer_to_str(timer), pixelfont, black, 64, 32), (224*game_scale,0))
 
     #check all collisions
     check_player_collision(player1)
