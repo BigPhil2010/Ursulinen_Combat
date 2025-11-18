@@ -2,7 +2,7 @@ import pygame    #this project runs on most versions of python 3.10
 import time
 
 pygame.init()
-
+pygame.mixer.init()
 
 ######################### VARIABLES #########################
 
@@ -48,6 +48,8 @@ keyset2 = {
 player1 = {
     "score": 0,
     "sprite": None,
+    "animation": "idle",
+    "frame": 0,
     "keyset": keyset1,
     "rect": None,
     "start_x": 0,
@@ -81,7 +83,7 @@ player2 = {
     "speed": 1,
     "gravity": 1,
     "jump_power": 1,
-    "jump_frames": 60,
+    "jump_frames": 30,
     "jump_frames_count": 0
 }
 
@@ -110,6 +112,10 @@ pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 15*game_scale)
 test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/png/animation.png").convert_alpha()
 test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").convert_alpha()
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
+
+#load sounds
+sound = pygame.mixer.Sound("")
+#sound.play()
 
 
 ######################### FUNCTIONS #########################
@@ -180,7 +186,7 @@ def jump(object):
 
 def check_input(player, delta):
     key = pygame.key.get_pressed() 
-    key_just = pygame.key.get_just_pressed() 
+    key_just = pygame.key.get_pressed() 
 
     if key_just[player["keyset"]["jump"]]:
         if player["collision_top"] == False:
