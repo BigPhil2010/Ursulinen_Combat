@@ -21,7 +21,12 @@ clock = pygame.time.Clock()
 run = True
 
 #timer
+game_duration = 180
 timer = 180
+start_time = time.time()
+
+#animation times
+last_anim_time = 0.0
 
 #setup FPS & delta time
 FPS = 60
@@ -35,21 +40,33 @@ gravity = 3 * game_scale
 keyset1 = {
     "left": pygame.K_a,
     "right": pygame.K_d,
-    "jump": pygame.K_w
+    "jump": pygame.K_w,
+    "hit": pygame.K_SPACE
 }
 
 keyset2 = {
     "left": pygame.K_LEFT,
     "right": pygame.K_RIGHT,
-    "jump": pygame.K_UP
+    "jump": pygame.K_UP,
+    "hit": pygame.K_RETURN
+}
+
+#sprite sheet layout
+spritesheet = {
+    "run": [[0, 0, 7, 0], 15],
+    "idle": [[0, 1, 1, 1], 5],
+    "hit": [[0, 2, 7, 2], 5],
+    "jump": [[0, 3, 7, 3], 5]
 }
 
 #player values
 player1 = {
     "score": 0,
     "sprite": None,
-    "animation": "idle",
+    "sprite_sheet": None,
+    "animation": "run",
     "frame": 0,
+    "looking_left": False,
     "keyset": keyset1,
     "rect": None,
     "start_x": 0,
@@ -113,19 +130,29 @@ test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/png/anima
 test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").convert_alpha()
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
 
+rittmann_spriteSheet = pygame.image.load(r"recources/images/sprites/png/rittmann.png")
+
 #load sounds
-sound = pygame.mixer.Sound("")
+#sound = pygame.mixer.Sound("")
 #sound.play()
+
+#set spriteSheet
+player1["sprite_sheet"] = rittmann_spriteSheet
 
 
 ######################### FUNCTIONS #########################
 
 #image processing
-def get_image(sheet, sprite_x, sprite_y, width, height, scale):
+def get_image(sheet, sprite_x, sprite_y, width, height, scale, flip):
     image = pygame.Surface((width, height), pygame.SRCALPHA).convert_alpha()
     image.blit(sheet, (0, 0), (sprite_x * width, sprite_y * height, sprite_x * width + width, sprite_y * height + height))
     image = pygame.transform.scale(image, (width * scale, height * scale))
+    if flip == True:
+        image = pygame.transform.flip(image, True, False)
     return image
+
+def hit(player):
+    print("hit")
 
 def check_player_collision(player):
 
@@ -188,17 +215,43 @@ def check_input(player, delta):
     key = pygame.key.get_pressed() 
     key_just = pygame.key.get_pressed() 
 
+    #check input jump
     if key_just[player["keyset"]["jump"]]:
         if player["collision_top"] == False:
             if player["collision_bottom"] == True:
                 player["gravity"] = -abs(player["gravity"]*player["jump_power"])
                 player["jump_frames_count"] = player["jump_frames"]
+
+    #check input left
     elif key[player["keyset"]["left"]]:
+        #update animation
+        if player["collision_bottom"] == True:
+            player["looking_left"] = True
+            player["animation"] = "run"
+        #update position
         if player["collision_left"] == False:
             player["rect"].x -= speed*player["speed"] * delta
+
+    #check input right
     elif key[player["keyset"]["right"]]:
+        #update animation
+        if player["collision_bottom"] == True:
+            player["looking_left"] = False
+            player["animation"] = "run"
+        #update position
         if player["collision_right"] == False:
             player["rect"].x += speed*player["speed"] * delta
+
+
+    if key_just[player["keyset"]["hit"]]:
+        hit(player)
+
+    if not key[player["keyset"]["left"]]:
+        if not key[player["keyset"]["right"]]:
+            if not key[player["keyset"]["jump"]]:
+                if not key[player["keyset"]["hit"]]:
+                    if player["collision_bottom"]:
+                        player["animation"] = "idle"
 
 def scale_plattforms(plattforms):
     scaled = []
@@ -218,7 +271,6 @@ def text_to_img(text, font, color, width, height):
     font_height = font_img.get_height()
     font_x = (width * game_scale - font_width)/2
     font_y = (height * game_scale - font_height)/2
-    img.fill((0, 0, 255))
     img.blit(font_img, (font_x, font_y))
     return img
 
@@ -235,20 +287,45 @@ def timer_to_str(time):
     else:
         return str(min) + ":" + str(sec)
 
+def cycle_frames(player, spriteSheetLayout):
+    global last_anim_time
+    availible_frames = spriteSheetLayout[player["animation"]][0]
+    sprite_x = player["frame"]
+    sprite_y = availible_frames[1]
+    animation_fps = spriteSheetLayout[player["animation"]][1]
+
+    time_per_step = 1 / animation_fps
+    current_anim_time = time.time()
+
+    if current_anim_time-last_anim_time >= time_per_step:
+        last_anim_time = current_anim_time
+        player["sprite"] = get_image(player["sprite_sheet"], sprite_x, sprite_y, player["width"], player["height"], game_scale, player["looking_left"])
+        if player["frame"] < spriteSheetLayout[player["animation"]][0][2]:
+            player["frame"] += 1
+        else:
+            player["frame"] = 0
+    
+def update_timer():
+    global timer
+    global start_time
+    current_time = time.time()
+    time_over = current_time-start_time
+    timer = round(game_duration-time_over)
+    #print(time_over)
+        
 
 #########################  UPDATE #########################
 
-
 #set BG & OL
-BG = get_image(test_BG, 0, 0, 512, 256, game_scale)
-OL = get_image(test_overlay, 0, 0, 512, 256, game_scale)
+BG = get_image(test_BG, 0, 0, 512, 256, game_scale, False)
+OL = get_image(test_overlay, 0, 0, 512, 256, game_scale, False)
 
 #scale up plattforms
 plattforms = scale_plattforms(plattforms)
 
 #TEMPORARY!!!!!!!!!!!!!
-player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], player1["height"], game_scale)
-player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], player2["height"], game_scale)
+player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], player1["height"], game_scale, False)
+player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], player2["height"], game_scale, False)
 
 
 ######################### GAMELOOP #########################
@@ -267,9 +344,13 @@ while run:
     for plattform in plattforms:
         pygame.draw.rect(screen, (0, 0, 0), plattform)
 
+    #update animation
+    if player1["animation"] == "run" or player1["animation"] == "idle":
+        cycle_frames(player1, spritesheet)
+
     #draw players
     screen.blit(player1["sprite"], (player1["rect"]))
-    screen.blit(player2["sprite"], (player2["rect"]))
+    #screen.blit(player2["sprite"], (player2["rect"]))
 
     #draw OL
     screen.blit(OL, (0, 0))
@@ -292,7 +373,8 @@ while run:
     #jumps
     jump(player1)
     jump(player2)
-    
+
+    update_timer()
 
     #event handler
     for event in pygame.event.get():
