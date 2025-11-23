@@ -1,6 +1,5 @@
 import pygame    #this project runs on most versions of python 3.10
 import time
-import asyncio
 
 pygame.init()
 pygame.mixer.init()
@@ -59,17 +58,18 @@ spritesheet = {
 
 #player values
 player1 = {
-    "once_anim": False,
     "score": 0,
     "sprite": None,
     "sprite_sheet": None,
     "animation": "run",
+    #animations
+    "run": [],
+    "idle": [],
+    "jump": [],
+    "hit": [],
     "frame": 0,
-    "once_frame": 0,
     "cooldown": 20,
     "cooldown_count": 0,
-    "last_anim_time": 0.0,
-    "last_once_anim_time": 0.0,
     "looking_left": False,
     "keyset": keyset1,
     "rect": None,
@@ -89,15 +89,13 @@ player1 = {
 }
 
 player2 = {
-    "once_anim": False,
     "score": 0,
     "sprite": None,
     "sprite_sheet": None,
     "animation": "run",
     "frame": 0,
-    "once_frame": 0,
-    "last_anim_time": 0.0,
-    "last_once_anim_time": 0.0,
+    "cooldown": 20,
+    "cooldown_count": 0,
     "looking_left": False,
     "keyset": keyset2,
     "rect": None,
@@ -162,45 +160,6 @@ def get_image(sheet, sprite_x, sprite_y, width, height, scale, flip):
     if flip == True:
         image = pygame.transform.flip(image, True, False)
     return image
-
-async def play_animation_once(player, spriteSheetLayout, animation):
-    player["once_anim"] = True
-    player["animation"] = animation
-    availible_frames = spriteSheetLayout[animation][0]
-    animation_fps = spriteSheetLayout[animation][1]
-
-    frames_total = (availible_frames[2] - availible_frames[0])
-    sprite_y = availible_frames[1]
-    time_per_step = 1 / animation_fps
-
-    while player["once_frame"] <= frames_total:
-        current_time = time.time()
-        if current_time - player["last_once_anim_time"] >= time_per_step:
-            player["last_once_anim_time"] = current_time
-            sprite_x = player["once_frame"]
-            
-            player["sprite"] = get_image(
-                player["sprite_sheet"], sprite_x, sprite_y,
-                player["width"], player["height"], game_scale,
-                player["looking_left"]
-            )
-
-            player["once_frame"] += 1
-            print(time_per_step)
-
-    # Animation fertig → zurück zu idle
-    print("end")
-    player["animation"] = "idle"
-    player["once_frame"] = 0
-    player["once_anim"] = False
-
-async def hit(player):
-    #print("hit")
-    player["cooldown_count"] = player["cooldown"]
-    #task = asyncio.create_task(play_animation_once(player, spritesheet, "hit"))
-    #await task
-    #play_animation_once(player, spritesheet, "hit")
-    player["animation"] = "hit"
 
 def check_player_collision(player):
 
@@ -297,7 +256,7 @@ def check_input(player, delta):
     #check input hit
     if key[player["keyset"]["hit"]]:
         if player["cooldown_count"] == 0:
-            asyncio.run(hit(player))
+            print("hit")
 
     if not key[player["keyset"]["left"]]:
         if not key[player["keyset"]["right"]]:
@@ -341,24 +300,6 @@ def timer_to_str(time):
         return str(min) + ":0" + str(sec)
     else:
         return str(min) + ":" + str(sec)
-
-def cycle_frames(player, spriteSheetLayout):
-    if player["once_anim"] == False:
-        availible_frames = spriteSheetLayout[player["animation"]][0]
-        sprite_x = player["frame"]
-        sprite_y = availible_frames[1]
-        animation_fps = spriteSheetLayout[player["animation"]][1]
-
-        time_per_step = 1 / animation_fps
-        current_anim_time = time.time()
-
-        if current_anim_time-player["last_anim_time"] >= time_per_step:
-            player["last_anim_time"] = current_anim_time
-            player["sprite"] = get_image(player["sprite_sheet"], sprite_x, sprite_y, player["width"], player["height"], game_scale, player["looking_left"])
-            if player["frame"] < spriteSheetLayout[player["animation"]][0][2]:
-                player["frame"] += 1
-            else:
-                player["frame"] = 0
     
 def update_timer():
     global timer
@@ -368,6 +309,27 @@ def update_timer():
     timer = round(game_duration-time_over)
     #print(time_over)
         
+def set_sprites(player, animation):
+    sprite_y = spritesheet[animation][0][1]
+    sprites_x = []
+    count = 0
+    while count < spritesheet[animation][0][2]:
+        sprites_x.append(count)
+        count += 1
+
+    for sprite_x in sprites_x:
+        player[animation].append(get_image(player["sprite_sheet"], sprite_x, sprite_y, player["width"], player["height"], game_scale, False))
+
+def update_sprites(player, animation, animation_fps):
+    global FPS
+    addition_per_frame = 1/FPS*animation_fps
+    player["frame"] += addition_per_frame
+    if player["frame"] >= spritesheet[animation][0][2]:
+        player["frame"] = 0
+
+    player["sprite"] = player[animation][int(player["frame"])]
+
+
 
 #########################  UPDATE #########################
 
@@ -382,11 +344,14 @@ plattforms = scale_plattforms(plattforms)
 player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], player1["height"], game_scale, False)
 player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], player2["height"], game_scale, False)
 
+#set sprites
+set_sprites(player1, "run")
+set_sprites(player1, "idle")
 
 ######################### GAMELOOP #########################
 
 while run:
-
+    update_sprites(player1, "run", 12)
     #messure delta time
     delta = time.time() - last_time
     delta *= FPS
@@ -399,10 +364,6 @@ while run:
     #draw plattforms
     for plattform in plattforms:
         pygame.draw.rect(screen, (0, 0, 0), plattform)
-
-    #update animation
-    if player1["animation"] == "run" or player1["animation"] == "idle":
-        cycle_frames(player1, spritesheet)
 
     #draw players
     screen.blit(player1["sprite"], (player1["rect"]))
