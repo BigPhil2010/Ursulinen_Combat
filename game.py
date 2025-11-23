@@ -62,7 +62,7 @@ player1 = {
     "sprite": None,
     "flipped_sprite": None,
     "sprite_sheet": None,
-    "sprite_sheet_layout": None,
+    "sprite_sheet_layout": spritesheetLO,
     "animation": "run",
     #animations
     "run": [],
@@ -93,8 +93,9 @@ player1 = {
 player2 = {
     "score": 0,
     "sprite": None,
-    "flipped_sprite": None,    "sprite_sheet": None,
-    "sprite_sheet_layout": None,
+    "flipped_sprite": None,
+    "sprite_sheet": None,
+    "sprite_sheet_layout": spritesheetLO,
     "animation": "run",
     #animations
     "run": [],
@@ -144,19 +145,19 @@ white = (255, 255, 255)
 pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 15*game_scale) 
 
 #load images
-test_sprite_sheet_image = pygame.image.load(r"recources/images/sprites/png/animation.png").convert_alpha()
+test_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/animation.png").convert_alpha()
 test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").convert_alpha()
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
 
-rittmann_spriteSheet = pygame.image.load(r"recources/images/sprites/png/rittmann.png")
+rittmann_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/rittmann.png")
 
 #load sounds
 #sound = pygame.mixer.Sound("")
 #sound.play()
 
 #set spriteSheet
-player1["sprite_sheet"] = rittmann_spriteSheet
-player1["sprite_sheet_layout"] =spritesheetLO
+player1["sprite_sheet"] = rittmann_sprite_sheet
+player2["sprite_sheet"] = test_sprite_sheet
 
 
 ######################### FUNCTIONS #########################
@@ -369,21 +370,23 @@ OL = get_image(test_overlay, 0, 0, 512, 256, game_scale)
 #scale up plattforms
 plattforms = scale_plattforms(plattforms)
 
-#TEMPORARY!!!!!!!!!!!!!
-player1["sprite"] = get_image(test_sprite_sheet_image, 0, 0, player1["width"], player1["height"], game_scale)
-player2["sprite"] = get_image(test_sprite_sheet_image, 0, 1, player2["width"], player2["height"], game_scale)
-
 #set sprites
 set_sprites(player1, "run")
 set_sprites(player1, "idle")
 set_sprites(player1, "jump")
 set_sprites(player1, "hit")
 
+set_sprites(player2, "run")
+set_sprites(player2, "idle")
+set_sprites(player2, "jump")
+set_sprites(player2, "hit")
+
 ######################### GAMELOOP #########################
 
 while run:
     #update player sprites
     update_sprites(player1, player1["animation"])
+    update_sprites(player2, player2["animation"])
 
     #messure delta time
     delta = time.time() - last_time
@@ -434,6 +437,10 @@ while run:
     #count cooldown
     if player1["cooldown_count"] > 0:
         player1["cooldown_count"] -= 1
+
+    if player2["cooldown_count"] > 0:
+        player2["cooldown_count"] -= 1
+    
 
     update_timer()
 
