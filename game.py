@@ -21,8 +21,8 @@ clock = pygame.time.Clock()
 run = True
 
 #timer
-game_duration = 180
-timer = 180
+game_duration = 60
+timer = game_duration
 start_time = time.time()
 
 #setup FPS & delta time
@@ -50,10 +50,17 @@ keyset2 = {
 
 #sprite sheet layout
 spritesheetLO = {
-    "run": [[0, 0, 7, 0], 15],
-    "idle": [[0, 1, 1, 1], 5],
-    "hit": [[0, 2, 7, 2], 30],
-    "jump": [[0, 3, 5, 3], 5]
+    "run": [[0, 0, 7, 0], 15, True],
+    "idle": [[0, 1, 1, 1], 5, True],
+    "hit": [[0, 2, 7, 2], 30, False],
+    "jump": [[0, 3, 5, 3], 5, False]
+}
+spritesheetLO2 = {
+    "run": [[0, 0, 7, 0], 15, True],
+    "idle": [[0, 1, 1, 1], 5, True],
+    "jump": [[0, 2, 5, 2], 5, False],
+    "hit_run": [[0, 3, 7, 3], 30, False],
+    "hit_idle": [[0, 4, 1, 4], 30, False],
 }
 
 #player values
@@ -62,13 +69,15 @@ player1 = {
     "sprite": None,
     "flipped_sprite": None,
     "sprite_sheet": None,
-    "sprite_sheet_layout": spritesheetLO,
+    "sprite_sheet_layout": spritesheetLO2,
     "animation": "run",
+    "hit": False,
     #animations
     "run": [],
     "idle": [],
     "jump": [],
-    "hit": [],
+    "hit_run": [],
+    "hit_idle": [],
     "frame": 0,
     "cooldown": 60,
     "cooldown_count": 0,
@@ -95,7 +104,7 @@ player2 = {
     "sprite": None,
     "flipped_sprite": None,
     "sprite_sheet": None,
-    "sprite_sheet_layout": spritesheetLO,
+    "sprite_sheet_layout": spritesheetLO2,
     "animation": "run",
     #animations
     "run": [],
@@ -150,14 +159,15 @@ test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").con
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
 
 rittmann_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/rittmann.png")
+kinast_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/kienast.png")
 
 #load sounds
 #sound = pygame.mixer.Sound("")
 #sound.play()
 
 #set spriteSheet
-player1["sprite_sheet"] = rittmann_sprite_sheet
-player2["sprite_sheet"] = test_sprite_sheet
+player1["sprite_sheet"] = kinast_sprite_sheet
+player2["sprite_sheet"] = kinast_sprite_sheet
 
 
 ######################### FUNCTIONS #########################
@@ -235,11 +245,12 @@ def jump(object):
 def hit(player):
     if player["cooldown_count"] == 0:
         player["cooldown_count"] = player["cooldown"]
-        player["animation"] = "hit"
+        player["hit"] = True
 
 def check_input(player, delta):
     key = pygame.key.get_pressed() 
     key_just = pygame.key.get_pressed() 
+    key_just_released = pygame.key.get_just_released()
 
     #check input jump
     if key_just[player["keyset"]["jump"]]:
@@ -287,7 +298,6 @@ def check_input(player, delta):
             if not key[player["keyset"]["jump"]]:
                 if not key[player["keyset"]["hit"]]:
                     if player["collision_bottom"]:
-                        if player["animation"] != "hit":
                             if player["animation"] != "idle":
                                 player["frame"] = 0
                             player["animation"] = "idle"
@@ -326,12 +336,19 @@ def timer_to_str(time):
     else:
         return str(min) + ":" + str(sec)
     
+def game_over():
+    print("game Over")
+
 def update_timer():
     global timer
     global start_time
-    current_time = time.time()
-    time_over = current_time-start_time
-    timer = round(game_duration-time_over)
+    if timer > 0:
+        current_time = time.time()
+        time_over = current_time-start_time
+        timer = round(game_duration-time_over)
+    else:
+        timer = 0
+        game_over()
         
 def set_sprites(player, animation):
     sprite_y = player["sprite_sheet_layout"][animation][0][1]
@@ -345,18 +362,28 @@ def set_sprites(player, animation):
 
 def update_sprites(player, animation):
     global FPS
-    loop = False
-    animation_fps = player["sprite_sheet_layout"][animation][1]
+    animation_playing = animation
+    animation_fps = player["sprite_sheet_layout"][animation_playing][1]
     addition_per_frame = 1/FPS*animation_fps
     player["frame"] += addition_per_frame
-    if player["frame"] >= player["sprite_sheet_layout"][animation][0][2]+1:
+
+    if player["hit"] == True: 
+        if animation != "jump":
+            animation_playing = str("hit_" + str(animation))
+    else:
+        animation_playing = animation
+    
+    loop = player["sprite_sheet_layout"][animation_playing][2]
+
+    if player["frame"] >= player["sprite_sheet_layout"][animation_playing][0][2]+1:
         if loop == True:
             player["frame"] = 0
         else:
             player["animation"] = "idle"
             player["frame"] = 0
+            player["hit"] = False
 
-    player["sprite"] = player[animation][int(player["frame"])]
+    player["sprite"] = player[animation_playing][int(player["frame"])]
     player["flipped_sprite"] = flip_image(player["sprite"])
 
 
@@ -374,19 +401,19 @@ plattforms = scale_plattforms(plattforms)
 set_sprites(player1, "run")
 set_sprites(player1, "idle")
 set_sprites(player1, "jump")
-set_sprites(player1, "hit")
+set_sprites(player1, "hit_run")
+set_sprites(player1, "hit_idle")
 
 set_sprites(player2, "run")
 set_sprites(player2, "idle")
 set_sprites(player2, "jump")
-set_sprites(player2, "hit")
 
 ######################### GAMELOOP #########################
 
 while run:
     #update player sprites
     update_sprites(player1, player1["animation"])
-    update_sprites(player2, player2["animation"])
+    #update_sprites(player2, player2["animation"])
 
     #messure delta time
     delta = time.time() - last_time
@@ -407,10 +434,10 @@ while run:
     else:
         screen.blit(player1["sprite"], (player1["rect"]))
 
-    if player2["looking_left"]:
-        screen.blit(player2["flipped_sprite"], (player2["rect"]))
-    else:
-        screen.blit(player2["sprite"], (player2["rect"]))
+    #if player2["looking_left"]:
+    #    screen.blit(player2["flipped_sprite"], (player2["rect"]))
+    #else:
+    #    screen.blit(player2["sprite"], (player2["rect"]))
 
     #draw OL
     screen.blit(OL, (0, 0))
@@ -428,11 +455,11 @@ while run:
 
     #controlls
     check_input(player1, delta)
-    check_input(player2, delta)
+    #check_input(player2, delta)
     
     #jumps
     jump(player1)
-    jump(player2)
+    #jump(player2)
 
     #count cooldown
     if player1["cooldown_count"] > 0:
