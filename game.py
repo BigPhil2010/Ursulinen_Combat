@@ -21,7 +21,7 @@ clock = pygame.time.Clock()
 run = True
 
 #timer
-game_duration = 60
+game_duration = 10
 timer = game_duration
 start_time = time.time()
 
@@ -65,13 +65,15 @@ spritesheetLO2 = {
 
 #player values
 player1 = {
-    "score": 0,
+    "hp": 100,
     "sprite": None,
     "flipped_sprite": None,
     "sprite_sheet": None,
     "sprite_sheet_layout": spritesheetLO2,
     "animation": "run",
     "hit": False,
+    "damage": 10,
+    "damage_done": False,
     #animations
     "run": [],
     "idle": [],
@@ -79,7 +81,7 @@ player1 = {
     "hit_run": [],
     "hit_idle": [],
     "frame": 0,
-    "cooldown": 60,
+    "cooldown": 30,
     "cooldown_count": 0,
     "looking_left": False,
     "keyset": keyset1,
@@ -95,22 +97,26 @@ player1 = {
     "speed": 1,
     "gravity": 1,
     "jump_power": 1,
-    "jump_frames": 60,
+    "jump_frames": 30,
     "jump_frames_count": 0
 }
 
 player2 = {
-    "score": 0,
+    "hp": 100,
     "sprite": None,
     "flipped_sprite": None,
     "sprite_sheet": None,
     "sprite_sheet_layout": spritesheetLO2,
     "animation": "run",
+    "hit": False,
+    "damage": 10,
+    "damage_done": False,
     #animations
     "run": [],
     "idle": [],
     "jump": [],
-    "hit": [],
+    "hit_run": [],
+    "hit_idle": [],
     "frame": 0,
     "cooldown": 20,
     "cooldown_count": 0,
@@ -138,12 +144,12 @@ player2["rect"] = pygame.Rect(player2["start_x"]*game_scale, player2["start_y"]*
 
 
 plattforms = [
-    pygame.Rect(0, 257, 512, 1),
+    pygame.Rect(0, 200, 512, 1),
     pygame.Rect(0, -1, 512, 1),
     pygame.Rect(-1, 0, 1, 256),
     pygame.Rect(513, 0, 1, 256),
 
-    pygame.Rect(62, 129, 379, 32)
+    pygame.Rect(50, 135, 50, 1)
 ]
 
 #colors
@@ -151,12 +157,13 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 
 #load fonts
-pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 15*game_scale) 
+pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 15*game_scale)
 
 #load images
 test_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/animation.png").convert_alpha()
 test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").convert_alpha()
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
+forum_BG = pygame.image.load(r"recources/images/backgrounds/png/Forum.png").convert_alpha()
 
 rittmann_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/rittmann.png")
 kinast_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/kienast.png")
@@ -206,7 +213,7 @@ def check_player_collision(player):
             #get smallest overlap
             min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
 
-           
+
 
             #get ovl direction
             if min_overlap == overlap_right:
@@ -242,15 +249,38 @@ def jump(object):
         if object["jump_frames_count"] == 1:
             object["gravity"] = abs(object["gravity"]/object["jump_power"])
 
+def can_hit(player, enemy):
+    if player["rect"].x < enemy["rect"].x and player["looking_left"] == False and player["rect"].colliderect(enemy["rect"]):
+        return True
+    elif player["rect"].x > enemy["rect"].x and player["looking_left"] == True and player["rect"].colliderect(enemy["rect"]):
+        return True
+    else:
+        return False
+
 def hit(player):
+    enemy = None
+
+    #set enemy
+    if player == player1:
+        enemy = player2
+    elif player == player2:
+        enemy = player1
+
     if player["cooldown_count"] == 0:
+        player["damage_done"] = False
         player["cooldown_count"] = player["cooldown"]
         player["hit"] = True
+        if can_hit(player, enemy):
+            player["damage_done"] = True
+            enemy["hp"] -= player1["damage"]
+            if enemy["hp"] <= 0:
+                game_over(player)
+
 
 def check_input(player, delta):
-    key = pygame.key.get_pressed() 
-    key_just = pygame.key.get_pressed() 
-    key_just_released = pygame.key.get_just_released()
+    key = pygame.key.get_pressed()
+    key_just = pygame.key.get_pressed()
+    #key_just_released = pygame.key.get_just_released()
 
     #check input jump
     if key_just[player["keyset"]["jump"]]:
@@ -330,14 +360,20 @@ def timer_to_str(time):
     while sec >= 60:
         min += 1
         sec -= 60
-    
+
     if len(str(sec)) == 1:
         return str(min) + ":0" + str(sec)
     else:
         return str(min) + ":" + str(sec)
-    
-def game_over():
-    print("game Over")
+
+def game_over(win):
+    if win == None:
+        print("Unentschieden")
+    if win == player1:
+        print("P1 hat gewonnen")
+    if win == player2:
+        print("P2 hat gewonnen")
+
 
 def update_timer():
     global timer
@@ -348,8 +384,8 @@ def update_timer():
         timer = round(game_duration-time_over)
     else:
         timer = 0
-        game_over()
-        
+        game_over(None)
+
 def set_sprites(player, animation):
     sprite_y = player["sprite_sheet_layout"][animation][0][1]
     sprites_x = []
@@ -367,12 +403,12 @@ def update_sprites(player, animation):
     addition_per_frame = 1/FPS*animation_fps
     player["frame"] += addition_per_frame
 
-    if player["hit"] == True: 
+    if player["hit"] == True:
         if animation != "jump":
             animation_playing = str("hit_" + str(animation))
     else:
         animation_playing = animation
-    
+
     loop = player["sprite_sheet_layout"][animation_playing][2]
 
     if player["frame"] >= player["sprite_sheet_layout"][animation_playing][0][2]+1:
@@ -391,7 +427,7 @@ def update_sprites(player, animation):
 #########################  UPDATE #########################
 
 #set BG & OL
-BG = get_image(test_BG, 0, 0, 512, 256, game_scale)
+BG = get_image(forum_BG, 0, 0, 512, 256, 2*game_scale)
 OL = get_image(test_overlay, 0, 0, 512, 256, game_scale)
 
 #scale up plattforms
@@ -407,13 +443,15 @@ set_sprites(player1, "hit_idle")
 set_sprites(player2, "run")
 set_sprites(player2, "idle")
 set_sprites(player2, "jump")
+set_sprites(player2, "hit_run")
+set_sprites(player2, "hit_idle")
 
 ######################### GAMELOOP #########################
 
 while run:
     #update player sprites
     update_sprites(player1, player1["animation"])
-    #update_sprites(player2, player2["animation"])
+    update_sprites(player2, player2["animation"])
 
     #messure delta time
     delta = time.time() - last_time
@@ -434,15 +472,15 @@ while run:
     else:
         screen.blit(player1["sprite"], (player1["rect"]))
 
-    #if player2["looking_left"]:
-    #    screen.blit(player2["flipped_sprite"], (player2["rect"]))
-    #else:
-    #    screen.blit(player2["sprite"], (player2["rect"]))
+    if player2["looking_left"]:
+        screen.blit(player2["flipped_sprite"], (player2["rect"]))
+    else:
+        screen.blit(player2["sprite"], (player2["rect"]))
 
     #draw OL
     screen.blit(OL, (0, 0))
-    screen.blit(text_to_img(player1["score"], pixelfont, black, 32, 32), (0*game_scale,0))
-    screen.blit(text_to_img(player2["score"], pixelfont, black, 32, 32), (480*game_scale,0))
+    screen.blit(text_to_img(player1["hp"], pixelfont, black, 32, 32), (0*game_scale,0))
+    screen.blit(text_to_img(player2["hp"], pixelfont, black, 32, 32), (480*game_scale,0))
     screen.blit(text_to_img(timer_to_str(timer), pixelfont, black, 64, 32), (224*game_scale,0))
 
     #check all collisions
@@ -455,11 +493,11 @@ while run:
 
     #controlls
     check_input(player1, delta)
-    #check_input(player2, delta)
-    
+    check_input(player2, delta)
+
     #jumps
     jump(player1)
-    #jump(player2)
+    jump(player2)
 
     #count cooldown
     if player1["cooldown_count"] > 0:
@@ -467,7 +505,7 @@ while run:
 
     if player2["cooldown_count"] > 0:
         player2["cooldown_count"] -= 1
-    
+
 
     update_timer()
 
@@ -475,6 +513,6 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-    
+
     pygame.display.flip()
     clock.tick(FPS)
