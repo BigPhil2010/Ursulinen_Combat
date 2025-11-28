@@ -1,20 +1,28 @@
 import pygame    #this project runs on most versions of python 3.10
 import time
+import characters
+import maps
 
 pygame.init()
 pygame.mixer.init()
 
 ######################### VARIABLES #########################
 
+#start sets
+P1 = "RITT"
+P2 = "KIEN"
+Map = "forum"
+
 #screensize
 screen_hight = 256
 screen_width = 512
 game_scale = 2
-BG = None
 
 #setup screen
 screen = pygame.display.set_mode((screen_width*game_scale, screen_hight*game_scale))
 pygame.display.set_caption('UrsulinenCombat')
+
+
 
 #gamestates
 clock = pygame.time.Clock()
@@ -29,133 +37,40 @@ start_time = time.time()
 FPS = 60
 last_time = time.time()
 
-#movement norms
+
+
+#physics preset
 speed = 2 * game_scale
 gravity = 3 * game_scale
 
-#keysets
-keyset1 = {
-    "left": pygame.K_a,
-    "right": pygame.K_d,
-    "jump": pygame.K_w,
-    "hit": pygame.K_SPACE
-}
+BG = None
+BG_scale = 1
 
-keyset2 = {
-    "left": pygame.K_LEFT,
-    "right": pygame.K_RIGHT,
-    "jump": pygame.K_UP,
-    "hit": pygame.K_RETURN
-}
+plattforms = []
 
-#sprite sheet layout
-spritesheetLO1 = {
-    "run": [[0, 0, 7, 0], 15, True],
-    "idle": [[0, 1, 1, 1], 5, True],
-    "jump": [[0, 3, 5, 3], 5, False],
-    "hit_run": [[0, 4, 7, 4], 30, False],
-    "hit_idle": [[0, 2, 1, 2], 30, False],
-}
-spritesheetLO2 = {
-    "run": [[0, 0, 7, 0], 15, True],
-    "idle": [[0, 1, 1, 1], 5, True],
-    "jump": [[0, 2, 5, 2], 5, False],
-    "hit_run": [[0, 3, 7, 3], 30, False],
-    "hit_idle": [[0, 4, 1, 4], 30, False],
-}
+#set maps
+BG = maps.maps_list[Map]["background"]
+plattforms = maps.maps_list[Map]["plattforms"]
+speed = maps.maps_list[Map]["speed"]*game_scale
+gravity = maps.maps_list[Map]["gravity"]*game_scale
+BG_scale = maps.maps_list[Map]["background_scale"]
+
 
 #player values
-player1 = {
-    "hp": 100,
-    "hp_bar": None,
-    "sprite": None,
-    "flipped_sprite": None,
-    "sprite_sheet": None,
-    "sprite_sheet_layout": spritesheetLO1,
-    "animation": "run",
-    "hit": False,
-    "damage": 10,
-    "damage_done": False,
-    #animations
-    "run": [],
-    "idle": [],
-    "jump": [],
-    "hit_run": [],
-    "hit_idle": [],
-    "frame": 0,
-    "cooldown": 30,
-    "cooldown_count": 0,
-    "looking_left": False,
-    "keyset": keyset1,
-    "rect": None,
-    "start_x": 0,
-    "start_y": 0,
-    "width": 32,
-    "height": 32,
-    "collision_top": False,
-    "collision_bottom": False,
-    "collision_left": False,
-    "collision_right": False,
-    "speed": 1,
-    "gravity": 1,
-    "jump_power": 1,
-    "jump_frames": 30,
-    "jump_frames_count": 0
-}
+player1 = {}
+player2 = {}
 
-player2 = {
-    "hp": 100,
-    "hp_bar": None,
-    "sprite": None,
-    "flipped_sprite": None,
-    "sprite_sheet": None,
-    "sprite_sheet_layout": spritesheetLO2,
-    "animation": "run",
-    "hit": False,
-    "damage": 10,
-    "damage_done": False,
-    #animations
-    "run": [],
-    "idle": [],
-    "jump": [],
-    "hit_run": [],
-    "hit_idle": [],
-    "frame": 0,
-    "cooldown": 20,
-    "cooldown_count": 0,
-    "looking_left": False,
-    "keyset": keyset2,
-    "rect": None,
-    "start_x": 480,
-    "start_y": 0,
-    "width": 32,
-    "height": 32,
-    "collision_top": False,
-    "collision_bottom": False,
-    "collision_left": False,
-    "collision_right": False,
-    "speed": 1,
-    "gravity": 1,
-    "jump_power": 1,
-    "jump_frames": 30,
-    "jump_frames_count": 0
-}
+#set characters
+player1 = characters.character_list[P1]
+player2 = characters.character_list[P2]
 
 #set player rects
 player1["rect"] = pygame.Rect(player1["start_x"]*game_scale, player1["start_y"]*game_scale, player1["width"]*game_scale, player1["height"]*game_scale)
 player2["rect"] = pygame.Rect(player2["start_x"]*game_scale, player2["start_y"]*game_scale, player2["width"]*game_scale, player2["height"]*game_scale)
 
 
-plattforms = [
-    pygame.Rect(0, 200, 512, 12),
-    pygame.Rect(0, -1, 512, 1),
-    pygame.Rect(-1, 0, 1, 256),
-    pygame.Rect(513, 0, 1, 256),
 
-    pygame.Rect(50, 135, 50, 1)
-]
-
-#colors
+#preload_colors
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 255, 0)
@@ -164,22 +79,12 @@ green = (0, 255, 0)
 pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 14*game_scale)
 
 #load images
-test_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/animation.png").convert_alpha()
-test_BG = pygame.image.load(r"recources/images/backgrounds/png/test_BG.png").convert_alpha()
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
 standard_overlay = pygame.image.load(r"recources/images/overlays/png/Standard_Overlay.png")
-forum_BG = pygame.image.load(r"recources/images/backgrounds/png/Forum.png").convert_alpha()
-
-rittmann_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/rittmann.png")
-kinast_sprite_sheet = pygame.image.load(r"recources/images/sprites/png/kienast.png")
 
 #load sounds
 #sound = pygame.mixer.Sound("")
 #sound.play()
-
-#set spriteSheet
-player1["sprite_sheet"] = rittmann_sprite_sheet
-player2["sprite_sheet"] = kinast_sprite_sheet
 
 
 ######################### FUNCTIONS #########################
@@ -402,15 +307,16 @@ def set_sprites(player, animation):
 def update_sprites(player, animation):
     global FPS
     animation_playing = animation
-    animation_fps = player["sprite_sheet_layout"][animation_playing][1]
-    addition_per_frame = 1/FPS*animation_fps
-    player["frame"] += addition_per_frame
 
     if player["hit"] == True:
         if animation != "jump":
             animation_playing = str("hit_" + str(animation))
     else:
         animation_playing = animation
+
+    animation_fps = player["sprite_sheet_layout"][animation_playing][1]
+    addition_per_frame = 1/FPS*animation_fps
+    player["frame"] += addition_per_frame
 
     loop = player["sprite_sheet_layout"][animation_playing][2]
 
@@ -430,7 +336,7 @@ def update_sprites(player, animation):
 #########################  UPDATE #########################
 
 #set BG & OL
-BG = get_image(forum_BG, 0, 0, 512, 256, 2*game_scale)
+BG = get_image(BG, 0, 0, 512, 256, BG_scale*game_scale)
 OL = get_image(standard_overlay, 0, 0, 512, 256, game_scale)
 
 #scale up plattforms
