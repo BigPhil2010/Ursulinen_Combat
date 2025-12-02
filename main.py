@@ -1,4 +1,5 @@
 import pygame
 import game
+import menu
 
-game.start("RITT", "KIEN", "forum", 180)
+game.start("KIEN", "RITT", "klassenzimmer", 180)

@@ -4,6 +4,7 @@ import characters
 import maps
 import global_functions as G
 import screen as scrn
+import keysets as ks
 
 pygame.init()
 pygame.mixer.init()
@@ -51,6 +52,20 @@ def start(P1, P2, Map, game_duration):
     player1 = characters.character_list[P1]
     player2 = characters.character_list[P2]
 
+    #set start_pos
+    player1["start_x"] = maps.maps_list[Map]["P1_start_x"]
+    player1["start_y"] = maps.maps_list[Map]["P1_start_y"]
+    player2["start_x"] = maps.maps_list[Map]["P2_start_x"]
+    player2["start_y"] = maps.maps_list[Map]["P2_start_y"]
+
+    #set looking_left
+    player1["looking_left"] = False
+    player2["looking_left"] = True
+
+    #set player keyset
+    player1["keyset"] = ks.keyset_P1
+    player2["keyset"] = ks.keyset_P2
+
     #set player rects
     player1["rect"] = pygame.Rect(player1["start_x"]*scrn.game_scale, player1["start_y"]*scrn.game_scale, player1["width"]*scrn.game_scale, player1["height"]*scrn.game_scale)
     player2["rect"] = pygame.Rect(player2["start_x"]*scrn.game_scale, player2["start_y"]*scrn.game_scale, player2["width"]*scrn.game_scale, player2["height"]*scrn.game_scale)
@@ -80,7 +95,6 @@ def start(P1, P2, Map, game_duration):
         #reset collision
         player["collision_left"] = False
         player["collision_right"] = False
-        player["collision_top"] = False
         player["collision_bottom"] = False
 
         for plattform in plattforms:
@@ -91,10 +105,9 @@ def start(P1, P2, Map, game_duration):
                 overlap_right = player["rect"].right - plattform.left
                 overlap_left = plattform.right - player["rect"].left
                 overlap_bottom = player["rect"].bottom - plattform.top
-                overlap_top = plattform.bottom - player["rect"].top
 
                 #get smallest overlap
-                min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
+                min_overlap = min(overlap_left, overlap_right, overlap_bottom)
 
 
 
@@ -108,15 +121,11 @@ def start(P1, P2, Map, game_duration):
                 elif min_overlap == overlap_bottom:
                     player["collision_bottom"] = True
 
-                elif min_overlap == overlap_top:
-                    player["collision_top"] = True
-        if player["collision_top"]:
-            player["jump_frames_count"] = 2
 
     def apply_gravity(object, delta, gravity):
         if object["collision_bottom"] == False and gravity*object["gravity"] == abs(gravity*object["gravity"]):
             object["rect"].y += gravity*object["gravity"] * delta
-        elif object["collision_top"] == False and gravity*object["gravity"] != abs(gravity*object["gravity"]):
+        elif gravity*object["gravity"] != abs(gravity*object["gravity"]):
             object["rect"].y += gravity*object["gravity"] * delta
 
     def jump(object):
@@ -135,12 +144,15 @@ def start(P1, P2, Map, game_duration):
 
     def hit(player):
         enemy = None
-
+        
         #set enemy
         if player == player1:
             enemy = player2
         elif player == player2:
             enemy = player1
+
+        print(player["damage"])
+        print(enemy["hp"])
 
         if player["cooldown_count"] == 0:
             player["damage_done"] = False
@@ -148,9 +160,11 @@ def start(P1, P2, Map, game_duration):
             player["hit"] = True
             if can_hit(player, enemy):
                 player["damage_done"] = True
-                enemy["hp"] -= player1["damage"]
+                enemy["hp"] -= player["damage"]
                 if enemy["hp"] <= 0:
                     game_over(player)
+        print(player["damage"])
+        print(enemy["hp"])
 
     def check_input(player, delta):
         key = pygame.key.get_pressed()
@@ -159,11 +173,10 @@ def start(P1, P2, Map, game_duration):
 
         #check input jump
         if key_just[player["keyset"]["jump"]]:
-            if player["collision_top"] == False:
-                if player["collision_bottom"] == True:
-                    player["animation"] = "jump"
-                    player["gravity"] = -abs(player["gravity"]*player["jump_power"])
-                    player["jump_frames_count"] = player["jump_frames"]
+            if player["collision_bottom"] == True:
+                player["animation"] = "jump"
+                player["gravity"] = -abs(player["gravity"]*player["jump_power"])
+                player["jump_frames_count"] = player["jump_frames"]
 
         #check input left
         elif key[player["keyset"]["left"]]:
@@ -240,12 +253,10 @@ def start(P1, P2, Map, game_duration):
             print("P2 hat gewonnen")
 
     def update_timer(timer, start_time):
-        print(timer)
         if timer > 0:
             current_time = time.time()
             time_over = current_time-start_time
             timer = round(game_duration-time_over)
-            print(timer)
         else:
             timer = 0
             game_over(None)
