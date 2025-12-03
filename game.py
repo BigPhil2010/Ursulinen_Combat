@@ -151,9 +151,6 @@ def start(P1, P2, Map, game_duration):
         elif player == player2:
             enemy = player1
 
-        print(player["damage"])
-        print(enemy["hp"])
-
         if player["cooldown_count"] == 0:
             player["damage_done"] = False
             player["cooldown_count"] = player["cooldown"]
@@ -163,13 +160,10 @@ def start(P1, P2, Map, game_duration):
                 enemy["hp"] -= player["damage"]
                 if enemy["hp"] <= 0:
                     game_over(player)
-        print(player["damage"])
-        print(enemy["hp"])
 
     def check_input(player, delta):
         key = pygame.key.get_pressed()
         key_just = pygame.key.get_pressed()
-        #key_just_released = pygame.key.get_just_released()
 
         #check input jump
         if key_just[player["keyset"]["jump"]]:
@@ -252,11 +246,13 @@ def start(P1, P2, Map, game_duration):
         if win == player2:
             print("P2 hat gewonnen")
 
-    def update_timer(timer, start_time):
+    def update_timer(start_time):
+        nonlocal timer
         if timer > 0:
             current_time = time.time()
             time_over = current_time-start_time
             timer = round(game_duration-time_over)
+            print(timer)
         else:
             timer = 0
             game_over(None)
@@ -351,7 +347,7 @@ def start(P1, P2, Map, game_duration):
             player2["cooldown_count"] -= 1
 
 
-        update_timer(timer, start_time)
+        update_timer(start_time)
 
         #event handler
         for event in pygame.event.get():
