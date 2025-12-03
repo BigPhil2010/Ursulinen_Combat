@@ -239,12 +239,14 @@ def start(P1, P2, Map, game_duration):
             return str(min) + ":" + str(sec)
 
     def game_over(win):
+        nonlocal run
         if win == None:
             print("Unentschieden")
         if win == player1:
             print("P1 hat gewonnen")
         if win == player2:
             print("P2 hat gewonnen")
+        run = False
 
     def update_timer(start_time):
         nonlocal timer
@@ -252,7 +254,6 @@ def start(P1, P2, Map, game_duration):
             current_time = time.time()
             time_over = current_time-start_time
             timer = round(game_duration-time_over)
-            print(timer)
         else:
             timer = 0
             game_over(None)
