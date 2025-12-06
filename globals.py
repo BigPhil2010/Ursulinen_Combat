@@ -1,7 +1,10 @@
 # In this file, all functions that can be used in multiple scripts are stored
-
 import pygame
+import screen as scrn
 
+pygame.init()
+
+######################### FUNCTIONS #########################
 def get_image(sheet, sprite_x, sprite_y, width, height, game_scale):
     image = pygame.Surface((width, height), pygame.SRCALPHA).convert_alpha()
     image.blit(sheet, (0, 0), (sprite_x * width, sprite_y * height, sprite_x * width + width, sprite_y * height + height))
@@ -59,3 +62,39 @@ def update_sprites(player, animation, FPS):
 
     player["sprite"] = player[animation_playing][int(player["frame"])]
     player["flipped_sprite"] = flip_image(player["sprite"])
+
+
+######################### VARIABLES #########################
+#preload_colors
+black = (0, 0, 0)
+white = (255, 255, 255)
+green = (0, 255, 0)
+
+#load fonts
+pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 14*scrn.game_scale)
+pixelfont_title = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 22*scrn.game_scale)
+
+#load images
+test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
+standard_overlay = pygame.image.load(r"recources/images/overlays/png/Standard_Overlay.png")
+
+#load btn images
+buttons = pygame.image.load(r"recources/images/GUI/png/buttons.png")
+
+btn_left = get_image(buttons, 0, 0, 16, 32, scrn.game_scale*2)
+btn_right = get_image(buttons, 1, 0, 16, 32, scrn.game_scale*2)
+btn_left_pressed = get_image(buttons, 2, 0, 16, 32, scrn.game_scale*2)
+btn_right_pressed = get_image(buttons, 3, 0, 16, 32, scrn.game_scale*2)
+
+preview_frame = get_image(buttons, 0, 1, 32, 32, scrn.game_scale*2)
+
+text_btn = get_image(buttons, 0, 2, 64, 32, scrn.game_scale)
+text_btn_pressed = get_image(buttons, 0, 3, 64, 32, scrn.game_scale)
+
+settings_btn = get_image(buttons, 0, 4, 32, 32, scrn.game_scale)
+settings_btn_pressed = get_image(buttons, 1, 4, 32, 32, scrn.game_scale)
+
+#load sounds
+#sound = pygame.mixer.Sound("")
+#sound.play()
+

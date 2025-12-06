@@ -2,7 +2,7 @@ import pygame    #this project runs on most versions of python 3.10
 import time
 import characters
 import maps
-import global_functions as G
+import globals as G
 import screen as scrn
 import keysets as ks
 
@@ -24,8 +24,6 @@ def start(P1, P2, Map, game_duration):
     #setup FPS & delta time
     FPS = 60
     last_time = time.time()
-
-
 
     #physics preset
     speed = None
@@ -70,23 +68,6 @@ def start(P1, P2, Map, game_duration):
     player1["rect"] = pygame.Rect(player1["start_x"]*scrn.game_scale, player1["start_y"]*scrn.game_scale, player1["width"]*scrn.game_scale, player1["height"]*scrn.game_scale)
     player2["rect"] = pygame.Rect(player2["start_x"]*scrn.game_scale, player2["start_y"]*scrn.game_scale, player2["width"]*scrn.game_scale, player2["height"]*scrn.game_scale)
 
-
-
-    #preload_colors
-    black = (0, 0, 0)
-    white = (255, 255, 255)
-    green = (0, 255, 0)
-
-    #load fonts
-    pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 14*scrn.game_scale)
-
-    #load images
-    test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
-    standard_overlay = pygame.image.load(r"recources/images/overlays/png/Standard_Overlay.png")
-
-    #load sounds
-    #sound = pygame.mixer.Sound("")
-    #sound.play()
 
     ######################### FUNCTIONS #########################
 
@@ -262,7 +243,7 @@ def start(P1, P2, Map, game_duration):
     #########################  UPDATE #########################
     #set BG & OL
     BG = G.get_image(BG, 0, 0, 512, 256, BG_scale*scrn.game_scale)
-    OL = G.get_image(standard_overlay, 0, 0, 512, 256, scrn.game_scale)
+    OL = G.get_image(G.standard_overlay, 0, 0, 512, 256, scrn.game_scale)
 
     #scale up plattforms
     plattforms = scale_plattforms(plattforms)
@@ -302,7 +283,7 @@ def start(P1, P2, Map, game_duration):
         player2["hp_bar"] = pygame.Rect((512-player2["hp"])*scrn.game_scale, 0*scrn.game_scale, player2["hp"]*scrn.game_scale, 16*scrn.game_scale)
 
         #reset screen
-        scrn.screen.fill(white)
+        scrn.screen.fill(G.white)
         scrn.screen.blit(BG, (0, 0))
 
         #draw plattforms
@@ -322,11 +303,11 @@ def start(P1, P2, Map, game_duration):
 
         #draw OL
         scrn.screen.blit(OL, (0, 0))
-        scrn.screen.blit(G.text_to_img(timer_to_str(timer), pixelfont, white, 64, 32,  scrn.game_scale), (224*scrn.game_scale,0))
+        scrn.screen.blit(G.text_to_img(timer_to_str(timer), G.pixelfont, G.white, 64, 32,  scrn.game_scale), (224*scrn.game_scale,0))
 
         #draw healthbar
-        pygame.draw.rect(scrn.screen, green, player1["hp_bar"])
-        pygame.draw.rect(scrn.screen, green, player2["hp_bar"])
+        pygame.draw.rect(scrn.screen, G.green, player1["hp_bar"])
+        pygame.draw.rect(scrn.screen, G.green, player2["hp_bar"])
 
         #check all collisions
         check_player_collision(player1)

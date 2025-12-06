@@ -1,5 +1,4 @@
 # In this file, all information for the screen is stored
-
 import pygame
 
 #screensize
