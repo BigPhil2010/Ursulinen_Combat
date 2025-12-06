@@ -267,6 +267,10 @@ def start(P1, P2, Map, game_duration):
     #scale up plattforms
     plattforms = scale_plattforms(plattforms)
 
+    #reset idle
+    player1["idle"] = []
+    player2["idle"] = []
+
     #set sprites
     G.set_sprites(player1, "run", scrn.game_scale)
     G.set_sprites(player1, "idle", scrn.game_scale)
