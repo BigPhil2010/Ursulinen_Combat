@@ -69,6 +69,7 @@ def update_sprites(player, animation, FPS):
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 255, 0)
+background_color = (200, 200, 200)
 
 #load fonts
 pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 14*scrn.game_scale)
@@ -97,4 +98,3 @@ settings_btn_pressed = get_image(buttons, 1, 4, 32, 32, scrn.game_scale)
 #load sounds
 #sound = pygame.mixer.Sound("")
 #sound.play()
-

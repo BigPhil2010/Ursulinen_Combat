@@ -5,6 +5,7 @@ import maps
 import globals as G
 import screen as scrn
 import keysets as ks
+import gameOver
 
 pygame.init()
 pygame.mixer.init()
@@ -49,6 +50,10 @@ def start(P1, P2, Map, game_duration):
     #set characters
     player1 = characters.character_list[P1]
     player2 = characters.character_list[P2]
+
+    #reset hp
+    player1["hp"] = 100
+    player2["hp"] = 100
 
     #set start_pos
     player1["start_x"] = maps.maps_list[Map]["P1_start_x"]
@@ -221,13 +226,13 @@ def start(P1, P2, Map, game_duration):
 
     def game_over(win):
         nonlocal run
-        if win == None:
-            print("Unentschieden")
-        if win == player1:
-            print("P1 hat gewonnen")
-        if win == player2:
-            print("P2 hat gewonnen")
         run = False
+        if win == None:
+            gameOver.gameOver(None)
+        if win == player1:
+            gameOver.gameOver("player1")
+        if win == player2:
+            gameOver.gameOver("player2")
 
     def update_timer(start_time):
         nonlocal timer
