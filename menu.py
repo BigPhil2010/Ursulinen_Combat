@@ -3,6 +3,7 @@ import characters
 import globals as G
 import screen as scrn
 import game
+import settings
 
 pygame.init()
 pygame.mixer.init()
@@ -36,6 +37,8 @@ def open():
 
     start_btn_rect = pygame.Rect(224 * scrn.game_scale, 192 * scrn.game_scale, 64 * scrn.game_scale, 32 * scrn.game_scale)
 
+    settings_btn_rect = pygame.Rect(480 * scrn.game_scale, 0 * scrn.game_scale, 32 * scrn.game_scale, 32 * scrn.game_scale)
+
     #set btn states
     P1_btn_left = G.btn_left
     P1_btn_right = G.btn_right
@@ -43,6 +46,7 @@ def open():
     P2_btn_right = G.btn_right
 
     start_btn = G.text_btn
+    settings_btn = G.settings_btn
 
     #set charakter
     P1_character = characters.character_list[list(characters.character_list)[P1]]
@@ -85,6 +89,9 @@ def open():
         nonlocal P2_btn_left
         nonlocal P2_btn_right
         nonlocal start_btn
+        nonlocal settings_btn
+
+        nonlocal run
 
         nonlocal P1
         nonlocal P2
@@ -106,7 +113,14 @@ def open():
         elif btn == "start":
             start_btn = G.text_btn_pressed
             start_game()
+        
+        elif btn == "settings":
+            settings_btn = G.settings_btn_pressed
+            run = False
+            settings.set()
 
+
+    ######################### LOOP #########################
     while run:
         scrn.screen.fill(G.background_color)
 
@@ -121,10 +135,13 @@ def open():
 
         #draw start btn
         scrn.screen.blit(start_btn, start_btn_rect)
-        scrn.screen.blit(G.text_to_img("start", G.pixelfont, G.black, 64, 32, scrn.game_scale), start_btn_rect)
+        scrn.screen.blit(G.text_to_img(G.texts["start"], G.pixelfont, G.black, 64, 32, scrn.game_scale), start_btn_rect)#
+
+        #draw settings btn
+        scrn.screen.blit(settings_btn, settings_btn_rect)
 
         #draw title
-        scrn.screen.blit(G.text_to_img("chose your character", G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
+        scrn.screen.blit(G.text_to_img(G.texts["chose"], G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
 
         #update players
         P1_character = characters.character_list[list(characters.character_list)[P1]]
@@ -158,6 +175,8 @@ def open():
                 
                 if start_btn_rect.collidepoint(event.pos):
                     btn_pressed("start")
+                if settings_btn_rect.collidepoint(event.pos):
+                    btn_pressed("settings")
 
             if event.type == pygame.MOUSEBUTTONUP:
                 P1_btn_left = G.btn_left
@@ -165,5 +184,6 @@ def open():
                 P2_btn_left = G.btn_left
                 P2_btn_right = G.btn_right
                 start_btn = G.text_btn
+                settings_btn = G.settings_btn
         pygame.display.flip()
         clock.tick(FPS)

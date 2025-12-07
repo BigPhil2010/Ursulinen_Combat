@@ -1,5 +1,6 @@
 # In this file, all functions that can be used in multiple scripts are stored
 import pygame
+import json
 import screen as scrn
 
 pygame.init()
@@ -98,3 +99,14 @@ settings_btn_pressed = get_image(buttons, 1, 4, 32, 32, scrn.game_scale)
 #load sounds
 #sound = pygame.mixer.Sound("")
 #sound.play()
+
+#load texts
+texts = None
+
+with open("settings.json", "r", encoding="utf-8") as file:
+        settigs = json.load(file)
+        texts_path = settigs["lang"]
+
+        with open(texts_path, "r", encoding="utf-8") as lang_file:
+            lang = json.load(lang_file)
+            texts = lang["txt"]

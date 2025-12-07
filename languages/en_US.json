@@ -1,0 +1,22 @@
+{
+    "name": "English(US)",
+    "txt":{
+        "chose": "Chose your character.",
+        "start": "start",
+        "P1_won": "Player 1 won!",
+        "P2_won": "Player 2 won!",
+        "draw": "It's a draw!",
+        "new": "new",
+        "quit": "quit",
+        "save": "save",
+        "lang": "language",
+        "scale": "scale",
+        "keys1": "P1 keys",
+        "keys2": "P2 keys",
+        "jump": "jump",
+        "hit": "hit",
+        "left": "left",
+        "right": "right",
+        "press": "(press)"
+    }
+}

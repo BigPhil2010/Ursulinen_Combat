@@ -1,10 +1,10 @@
 import pygame    #this project runs on most versions of python 3.10
 import time
+import json
 import characters
 import maps
 import globals as G
 import screen as scrn
-import keysets as ks
 import gameOver
 
 pygame.init()
@@ -66,8 +66,13 @@ def start(P1, P2, Map, game_duration):
     player2["looking_left"] = True
 
     #set player keyset
-    player1["keyset"] = ks.keyset_P1
-    player2["keyset"] = ks.keyset_P2
+    #player1["keyset"] = ks.keyset_P1
+    #player2["keyset"] = ks.keyset_P2
+
+    with open("settings.json", "r", encoding="utf-8") as file:
+        settigs = json.load(file)
+        player1["keyset"] = settigs["keysets"]["keyset_P1"]
+        player2["keyset"] = settigs["keysets"]["keyset_P2"]
 
     #set player rects
     player1["rect"] = pygame.Rect(player1["start_x"]*scrn.game_scale, player1["start_y"]*scrn.game_scale, player1["width"]*scrn.game_scale, player1["height"]*scrn.game_scale)

@@ -15,10 +15,6 @@ def gameOver(winner):
     #setup FPS
     FPS = 60
 
-    #character selection
-    P1 = 0
-    P2 = 1
-
     #set btn rects
     newGame_btn_rect = pygame.Rect(128 * scrn.game_scale, 180 * scrn.game_scale, 64 * scrn.game_scale, 32 * scrn.game_scale)
     quit_btn_rect = pygame.Rect(320 * scrn.game_scale, 180 * scrn.game_scale, 64 * scrn.game_scale, 32 * scrn.game_scale)
@@ -30,11 +26,11 @@ def gameOver(winner):
     title = None
 
     if winner == None:
-        title = "draw"
+        title = G.texts["draw"]
     elif winner == "player1":
-        title = "Player 1 won"
+        title = G.texts["P1_won"]
     elif winner == "player2":
-        title = "Player 2 won"
+        title = G.texts["P2_won"]
 
     ######################### FUNCTIONS #########################
 
@@ -51,16 +47,16 @@ def gameOver(winner):
             quit_btn = G.text_btn_pressed
             run = False
 
-
+    ######################### LOOP #########################
     while run:
         scrn.screen.fill(G.background_color)
 
         #draw btns
         scrn.screen.blit(newGame_btn, newGame_btn_rect)
-        scrn.screen.blit(G.text_to_img("new", G.pixelfont, G.black, 64, 32, scrn.game_scale), newGame_btn_rect)
+        scrn.screen.blit(G.text_to_img(G.texts["new"], G.pixelfont, G.black, 64, 32, scrn.game_scale), newGame_btn_rect)
 
         scrn.screen.blit(quit_btn, quit_btn_rect)
-        scrn.screen.blit(G.text_to_img("quit", G.pixelfont, G.black, 64, 32, scrn.game_scale), quit_btn_rect)
+        scrn.screen.blit(G.text_to_img(G.texts["quit"], G.pixelfont, G.black, 64, 32, scrn.game_scale), quit_btn_rect)
 
         #draw title
         scrn.screen.blit(G.text_to_img(title, G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
