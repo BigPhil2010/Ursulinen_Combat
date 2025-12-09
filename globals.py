@@ -73,8 +73,8 @@ green = (0, 255, 0)
 background_color = (200, 200, 200)
 
 #load fonts
-pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 14*scrn.game_scale)
-pixelfont_title = pygame.font.Font(r"recources/fonts/Minecraft.ttf", 22*scrn.game_scale)
+pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", round(14*scrn.game_scale))
+pixelfont_title = pygame.font.Font(r"recources/fonts/Minecraft.ttf", round(22*scrn.game_scale))
 
 #load images
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
@@ -87,6 +87,11 @@ btn_left = get_image(buttons, 0, 0, 16, 32, scrn.game_scale*2)
 btn_right = get_image(buttons, 1, 0, 16, 32, scrn.game_scale*2)
 btn_left_pressed = get_image(buttons, 2, 0, 16, 32, scrn.game_scale*2)
 btn_right_pressed = get_image(buttons, 3, 0, 16, 32, scrn.game_scale*2)
+
+normal_btn_left = get_image(buttons, 0, 0, 16, 32, scrn.game_scale)
+normal_btn_right = get_image(buttons, 1, 0, 16, 32, scrn.game_scale)
+normal_btn_left_pressed = get_image(buttons, 2, 0, 16, 32, scrn.game_scale)
+normal_btn_right_pressed = get_image(buttons, 3, 0, 16, 32, scrn.game_scale)
 
 preview_frame = get_image(buttons, 0, 1, 32, 32, scrn.game_scale*2)
 

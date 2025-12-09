@@ -32,6 +32,8 @@ def set():
     keys2_height = 212 * scrn.game_scale
 
     #set btn rects
+    middle = 288
+
     save_btn_rect = pygame.Rect(16 * scrn.game_scale, save_height, 64 * scrn.game_scale, 32 * scrn.game_scale)
 
     keys1_jump_btn_rect = pygame.Rect(118 * scrn.game_scale, keys1_height, 64 * scrn.game_scale, 32 * scrn.game_scale)
@@ -43,6 +45,10 @@ def set():
     keys2_hit_btn_rect = pygame.Rect(220 * scrn.game_scale, keys2_height, 64 * scrn.game_scale, 32 * scrn.game_scale)
     keys2_left_btn_rect = pygame.Rect(322 * scrn.game_scale, keys2_height, 64 * scrn.game_scale, 32 * scrn.game_scale)
     keys2_right_btn_rect = pygame.Rect(424 * scrn.game_scale, keys2_height, 64 * scrn.game_scale, 32 * scrn.game_scale)
+
+    scale_up_btn_rect = pygame.Rect((middle+32) * scrn.game_scale, scale_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
+    scale_down_btn_rect = pygame.Rect((middle-32-16) * scrn.game_scale, scale_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
+    scale_btn_rect = pygame.Rect((middle-32) * scrn.game_scale, scale_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
 
 
     #set btn states
@@ -58,6 +64,10 @@ def set():
     keys2_left_btn = G.text_btn
     keys2_right_btn = G.text_btn
 
+    scale_up_btn = G.normal_btn_right
+    scale_down_btn = G.normal_btn_left
+    scale_btn = G.text_btn
+
     #btn texts
     keys1_jump_txt = G.texts["jump"]
     keys1_hit_txt = G.texts["hit"]
@@ -68,6 +78,8 @@ def set():
     keys2_hit_txt = G.texts["hit"]
     keys2_left_txt = G.texts["left"]
     keys2_right_txt = G.texts["right"]
+
+    scale_txt = str(settings["gamescale"])
 
     ######################### FUNCTIONS #########################
 
@@ -196,13 +208,25 @@ def set():
         with open("settings.json", "w", encoding="utf-8") as file:
             json.dump(settings, file, ensure_ascii=False, indent=4)
 
+    def update_scale(direction):
+        nonlocal settings
+        nonlocal scale_txt
+        
+        if direction == "up":
+            settings["gamescale"] += 0.25
+        if direction == "down":
+            settings["gamescale"] -= 0.25
+        scale_txt = str(settings["gamescale"])
+        
     def btn_pressed(btn):
         nonlocal save_btn
+        nonlocal scale_up_btn
+        nonlocal scale_down_btn
 
         nonlocal run
 
         if btn == "save":
-            newGame_btn = G.text_btn_pressed
+            save_btn = G.text_btn_pressed
             save()
             run = False
             menu.open()
@@ -225,12 +249,17 @@ def set():
         elif btn == "keys2_right":
             get_key("P2_right")
 
+        elif btn == "scale_up":
+            scale_up_btn = G.normal_btn_right_pressed
+            update_scale("up")
+        elif btn == "scale_down":
+            scale_down_btn = G.normal_btn_left_pressed
+            update_scale("down")
+
 
 
     ######################### LOOP #########################
     while run:
-        #debug
-        #print(pressed_key)
         
         scrn.screen.fill(G.background_color)
 
@@ -255,6 +284,11 @@ def set():
         scrn.screen.blit(G.text_to_img(keys2_left_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys2_left_btn_rect)
         scrn.screen.blit(keys2_right_btn, keys2_right_btn_rect)
         scrn.screen.blit(G.text_to_img(keys2_right_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys2_right_btn_rect)
+
+        scrn.screen.blit(scale_btn, scale_btn_rect)
+        scrn.screen.blit(G.text_to_img(scale_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), scale_btn_rect)
+        scrn.screen.blit(scale_up_btn, scale_up_btn_rect)
+        scrn.screen.blit(scale_down_btn, scale_down_btn_rect)
 
         #draw setting names
         scrn.screen.blit(G.text_to_img(str(G.texts["lang"])+":", G.pixelfont, G.black, 64, 32, scrn.game_scale), (16 * scrn.game_scale, language_height))
@@ -288,9 +322,15 @@ def set():
                     btn_pressed("keys2_left")
                 if keys2_right_btn_rect.collidepoint(event.pos):
                     btn_pressed("keys2_right")
+                if scale_up_btn_rect.collidepoint(event.pos):
+                    btn_pressed("scale_up")
+                if scale_down_btn_rect.collidepoint(event.pos):
+                    btn_pressed("scale_down")
 
             if event.type == pygame.MOUSEBUTTONUP:
                 save_btn = G.text_btn
+                scale_up_btn = G.normal_btn_right
+                scale_down_btn = G.normal_btn_left
             
             if event.type == pygame.KEYDOWN:
                 pressed_key = event.key
