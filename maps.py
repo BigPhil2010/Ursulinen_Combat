@@ -1,5 +1,6 @@
 # In this file, all information for maps such as backgrounds, gravity or borders are stored
 import pygame
+import random
 
 forum = {
     "background": pygame.image.load(r"recources/images/backgrounds/png/Forum.png"),
@@ -44,3 +45,8 @@ maps_list = {
     "forum": forum,
     "klassenzimmer": klassenzimmer
 }
+
+def random_map():
+    index = random.randint(0, len(list(maps_list))-1)
+    map_name = list(maps_list)[index]
+    return map_name
