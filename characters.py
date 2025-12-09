@@ -71,7 +71,7 @@ KIEN = {
     "sprite_sheet_layout": spritesheet_LO_KIEN,
     "animation": "run",
     "hit": False,
-    "damage": 0.5,
+    "damage": 0.4,
     "damage_done": False,
     #animations
     "run": [],
@@ -92,7 +92,7 @@ KIEN = {
     "collision_bottom": False,
     "collision_left": False,
     "collision_right": False,
-    "speed": 1,
+    "speed": 0.7,
     "gravity": 1,
     "jump_power": 1,
     "jump_frames": 30,

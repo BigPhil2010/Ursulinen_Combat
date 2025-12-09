@@ -162,5 +162,3 @@ def set():
             
         pygame.display.flip()
         clock.tick(FPS)
-
-set()

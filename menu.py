@@ -81,7 +81,7 @@ def open():
         nonlocal run
         run = False
 
-        game.start(list(characters.character_list)[P1], list(characters.character_list)[P2], "forum", 20)
+        game.start(list(characters.character_list)[P1], list(characters.character_list)[P2], "forum", 119)
 
     def btn_pressed(btn):
         nonlocal P1_btn_left

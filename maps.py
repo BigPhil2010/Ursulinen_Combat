@@ -6,7 +6,7 @@ forum = {
     "background_scale": 2,
     "plattforms": [
                     pygame.Rect(0, 200, 512, 12),
-                    pygame.Rect(0, -1, 512, 1),
+                    pygame.Rect(0, -4, 512, 1),
                     pygame.Rect(-1, 0, 1, 256),
                     pygame.Rect(513, 0, 1, 256),
 
