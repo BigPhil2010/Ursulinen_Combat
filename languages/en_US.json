@@ -1,7 +1,7 @@
 {
     "name": "English(US)",
     "txt":{
-        "chose": "Chose your character.",
+        "choose": "Choose your character.",
         "start": "start",
         "P1_won": "Player 1 won!",
         "P2_won": "Player 2 won!",

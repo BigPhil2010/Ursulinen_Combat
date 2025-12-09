@@ -1,4 +1,5 @@
 import pygame    #this project runs on most versions of python 3.10
+import json
 import globals as G
 import screen as scrn
 import menu
@@ -7,6 +8,11 @@ pygame.init()
 pygame.mixer.init()
 def set():
     ######################### VARIABLES #########################
+    settings = None
+
+    #load settings
+    with open("settings.json", "r", encoding="utf-8") as file:
+        settings = json.load(file)
 
     #gamestates
     clock = pygame.time.Clock()
@@ -14,6 +20,9 @@ def set():
 
     #setup FPS
     FPS = 60
+
+    pressed_key = None
+    key_waiting = None
 
     #setting heights
     save_height = 8 * scrn.game_scale
@@ -62,8 +71,7 @@ def set():
 
     ######################### FUNCTIONS #########################
 
-    def btn_pressed(btn):
-        nonlocal save_btn
+    def get_key(key):
         nonlocal keys1_jump_btn
         nonlocal keys1_hit_btn
         nonlocal keys1_left_btn
@@ -83,23 +91,147 @@ def set():
         nonlocal keys2_left_txt
         nonlocal keys2_right_txt
 
+        nonlocal key_waiting
+        nonlocal pressed_key
+        nonlocal settings
+
+        if key == "P1_jump":
+            keys1_jump_btn = G.text_btn_pressed
+            keys1_jump_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys1_jump_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P1"]["jump"] = pressed_key
+                
+                keys1_jump_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+        if key == "P1_hit":
+            keys1_hit_btn = G.text_btn_pressed
+            keys1_hit_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys1_hit_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P1"]["hit"] = pressed_key
+                
+                keys1_hit_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+        if key == "P1_left":
+            keys1_left_btn = G.text_btn_pressed
+            keys1_left_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys1_left_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P1"]["left"] = pressed_key
+                
+                keys1_left_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+        if key == "P1_right":
+            keys1_right_btn = G.text_btn_pressed
+            keys1_right_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys1_right_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P1"]["right"] = pressed_key
+                
+                keys1_right_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+
+        if key == "P2_jump":
+            keys2_jump_btn = G.text_btn_pressed
+            keys2_jump_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys2_jump_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P2"]["jump"] = pressed_key
+                
+                keys2_jump_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+        if key == "P2_hit":
+            keys2_hit_btn = G.text_btn_pressed
+            keys2_hit_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys2_hit_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P2"]["hit"] = pressed_key
+                
+                keys2_hit_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+        if key == "P2_left":
+            keys2_left_btn = G.text_btn_pressed
+            keys2_left_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys2_left_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P2"]["left"] = pressed_key
+                
+                keys2_left_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+        
+        if key == "P2_right":
+            keys2_right_btn = G.text_btn_pressed
+            keys2_right_txt = G.texts["press"]
+            key_waiting = key
+            if not pressed_key == None:
+                keys2_right_txt = pygame.key.name(pressed_key)
+                settings["keysets"]["keyset_P2"]["right"] = pressed_key
+                
+                keys2_right_btn = G.text_btn
+                key_waiting = None
+                pressed_key = None
+
+    def save():
+        with open("settings.json", "w", encoding="utf-8") as file:
+            json.dump(settings, file, ensure_ascii=False, indent=4)
+
+    def btn_pressed(btn):
+        nonlocal save_btn
+
         nonlocal run
 
         if btn == "save":
             newGame_btn = G.text_btn_pressed
+            save()
             run = False
             menu.open()
+        
         elif btn == "keys1_jump":
-            keys1_jump_btn = G.text_btn_pressed
-            keys1_jump_txt = G.texts["press"]
+            get_key("P1_jump")
         elif btn == "keys1_hit":
-            keys1_hit_btn = G
+            get_key("P1_hit")
+        elif btn == "keys1_left":
+            get_key("P1_left")
+        elif btn == "keys1_right":
+            get_key("P1_right")
+        
+        elif btn == "keys2_jump":
+            get_key("P2_jump")
+        elif btn == "keys2_hit":
+            get_key("P2_hit")
+        elif btn == "keys2_left":
+            get_key("P2_left")
+        elif btn == "keys2_right":
+            get_key("P2_right")
 
 
 
     ######################### LOOP #########################
     while run:
-        #print(pygame.key.name(13))
+        #debug
+        #print(pressed_key)
+        
         scrn.screen.fill(G.background_color)
 
         #draw btns
@@ -159,6 +291,10 @@ def set():
 
             if event.type == pygame.MOUSEBUTTONUP:
                 save_btn = G.text_btn
+            
+            if event.type == pygame.KEYDOWN:
+                pressed_key = event.key
+                get_key(key_waiting)
             
         pygame.display.flip()
         clock.tick(FPS)

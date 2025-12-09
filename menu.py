@@ -1,5 +1,6 @@
 import pygame    #this project runs on most versions of python 3.10
 import characters
+import maps
 import globals as G
 import screen as scrn
 import game
@@ -141,7 +142,7 @@ def open():
         scrn.screen.blit(settings_btn, settings_btn_rect)
 
         #draw title
-        scrn.screen.blit(G.text_to_img(G.texts["chose"], G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
+        scrn.screen.blit(G.text_to_img(G.texts["choose"], G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
 
         #update players
         P1_character = characters.character_list[list(characters.character_list)[P1]]
