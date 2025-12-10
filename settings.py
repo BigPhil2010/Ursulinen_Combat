@@ -50,6 +50,10 @@ def set():
     scale_down_btn_rect = pygame.Rect((middle-32-16) * scrn.game_scale, scale_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
     scale_btn_rect = pygame.Rect((middle-32) * scrn.game_scale, scale_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
 
+    lang_up_btn_rect = pygame.Rect((middle+32) * scrn.game_scale, language_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
+    lang_down_btn_rect = pygame.Rect((middle-32-16) * scrn.game_scale, language_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
+    lang_btn_rect = pygame.Rect((middle-32) * scrn.game_scale, language_height, 16 * scrn.game_scale, 32 * scrn.game_scale)
+
 
     #set btn states
     save_btn = G.text_btn
@@ -67,6 +71,10 @@ def set():
     scale_up_btn = G.normal_btn_right
     scale_down_btn = G.normal_btn_left
     scale_btn = G.text_btn
+    
+    lang_up_btn = G.normal_btn_right
+    lang_down_btn = G.normal_btn_left
+    lang_btn = G.text_btn
 
     #btn texts
     keys1_jump_txt = G.texts["jump"]
@@ -79,7 +87,9 @@ def set():
     keys2_left_txt = G.texts["left"]
     keys2_right_txt = G.texts["right"]
 
-    scale_txt = str(settings["gamescale"])
+    scale_txt = str(settings["gamescale"]) + "x"
+
+    lang_txt = str(G.lang_path_to_name(settings["lang"]))
 
     ######################### FUNCTIONS #########################
 
@@ -207,6 +217,7 @@ def set():
     def save():
         with open("settings.json", "w", encoding="utf-8") as file:
             json.dump(settings, file, ensure_ascii=False, indent=4)
+        G.load_texts()
 
     def update_scale(direction):
         nonlocal settings
@@ -214,14 +225,39 @@ def set():
         
         if direction == "up":
             settings["gamescale"] += 0.25
-        if direction == "down":
+        if direction == "down" and settings["gamescale"]>=0.5:
             settings["gamescale"] -= 0.25
-        scale_txt = str(settings["gamescale"])
+        scale_txt = str(settings["gamescale"]) + "x"
         
+    def update_lang(direction):
+        nonlocal settings
+        nonlocal lang_txt
+
+        language_count = len(G.language_list)
+
+        # Falls noch keine Sprache gesetzt ist, starte bei Index 0
+        if settings["lang"] not in G.language_list:
+            current_index = 0
+        else:
+            current_index = G.language_list.index(settings["lang"])
+
+        if direction == "up":
+            new_index = (current_index + 1) % language_count
+        elif direction == "down":
+            new_index = (current_index - 1) % language_count
+        else:
+            new_index = current_index  # keine Änderung bei falscher Eingabe
+
+        settings["lang"] = G.language_list[new_index]
+        lang_txt = str(G.lang_path_to_name(settings["lang"]))
+
     def btn_pressed(btn):
         nonlocal save_btn
         nonlocal scale_up_btn
         nonlocal scale_down_btn
+
+        nonlocal lang_up_btn
+        nonlocal lang_down_btn
 
         nonlocal run
 
@@ -255,6 +291,13 @@ def set():
         elif btn == "scale_down":
             scale_down_btn = G.normal_btn_left_pressed
             update_scale("down")
+        
+        elif btn == "lang_up":
+            lang_up_btn = G.normal_btn_right_pressed
+            update_lang("up")
+        elif btn == "lang_down":
+            lang_down_btn = G.normal_btn_left_pressed
+            update_lang("down")
 
 
 
@@ -265,30 +308,35 @@ def set():
 
         #draw btns
         scrn.screen.blit(save_btn, save_btn_rect)
-        scrn.screen.blit(G.text_to_img(G.texts["save"], G.pixelfont, G.black, 64, 32, scrn.game_scale), save_btn_rect)
+        scrn.screen.blit(G.text_to_img(G.texts["save"], G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), save_btn_rect)
 
         scrn.screen.blit(keys1_jump_btn, keys1_jump_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys1_jump_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys1_jump_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys1_jump_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys1_jump_btn_rect)
         scrn.screen.blit(keys1_hit_btn, keys1_hit_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys1_hit_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys1_hit_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys1_hit_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys1_hit_btn_rect)
         scrn.screen.blit(keys1_left_btn, keys1_left_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys1_left_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys1_left_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys1_left_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys1_left_btn_rect)
         scrn.screen.blit(keys1_right_btn, keys1_right_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys1_right_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys1_right_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys1_right_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys1_right_btn_rect)
 
         scrn.screen.blit(keys2_jump_btn, keys2_jump_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys2_jump_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys2_jump_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys2_jump_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys2_jump_btn_rect)
         scrn.screen.blit(keys2_hit_btn, keys2_hit_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys2_hit_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys2_hit_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys2_hit_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys2_hit_btn_rect)
         scrn.screen.blit(keys2_left_btn, keys2_left_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys2_left_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys2_left_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys2_left_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys2_left_btn_rect)
         scrn.screen.blit(keys2_right_btn, keys2_right_btn_rect)
-        scrn.screen.blit(G.text_to_img(keys2_right_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), keys2_right_btn_rect)
+        scrn.screen.blit(G.text_to_img(keys2_right_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), keys2_right_btn_rect)
 
         scrn.screen.blit(scale_btn, scale_btn_rect)
-        scrn.screen.blit(G.text_to_img(scale_txt, G.pixelfont, G.black, 64, 32, scrn.game_scale), scale_btn_rect)
+        scrn.screen.blit(G.text_to_img(scale_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), scale_btn_rect)
         scrn.screen.blit(scale_up_btn, scale_up_btn_rect)
         scrn.screen.blit(scale_down_btn, scale_down_btn_rect)
+
+        scrn.screen.blit(lang_btn, lang_btn_rect)
+        scrn.screen.blit(G.text_to_img(lang_txt, G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), lang_btn_rect)
+        scrn.screen.blit(lang_up_btn, lang_up_btn_rect)
+        scrn.screen.blit(lang_down_btn, lang_down_btn_rect)
 
         #draw setting names
         scrn.screen.blit(G.text_to_img(str(G.texts["lang"])+":", G.pixelfont, G.black, 64, 32, scrn.game_scale), (16 * scrn.game_scale, language_height))
@@ -326,11 +374,17 @@ def set():
                     btn_pressed("scale_up")
                 if scale_down_btn_rect.collidepoint(event.pos):
                     btn_pressed("scale_down")
+                if lang_up_btn_rect.collidepoint(event.pos):
+                    btn_pressed("lang_up")
+                if lang_down_btn_rect.collidepoint(event.pos):
+                    btn_pressed("lang_down")
 
             if event.type == pygame.MOUSEBUTTONUP:
                 save_btn = G.text_btn
                 scale_up_btn = G.normal_btn_right
                 scale_down_btn = G.normal_btn_left
+                lang_up_btn = G.normal_btn_right
+                lang_down_btn = G.normal_btn_left
             
             if event.type == pygame.KEYDOWN:
                 pressed_key = event.key

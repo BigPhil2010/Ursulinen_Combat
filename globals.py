@@ -1,6 +1,7 @@
 # In this file, all functions that can be used in multiple scripts are stored
 import pygame
 import json
+import os
 import screen as scrn
 
 pygame.init()
@@ -64,17 +65,23 @@ def update_sprites(player, animation, FPS):
     player["sprite"] = player[animation_playing][int(player["frame"])]
     player["flipped_sprite"] = flip_image(player["sprite"])
 
+def lang_path_to_name(path):
+    with open(path, "r", encoding="utf-8") as file:
+        lang_file = json.load(file)
+        lang_name = lang_file["name"]
+        return lang_name
 
 ######################### VARIABLES #########################
 #preload_colors
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 255, 0)
+btn_txt_color = (0, 0, 0)
 background_color = (200, 200, 200)
 
 #load fonts
-pixelfont = pygame.font.Font(r"recources/fonts/Minecraft.ttf", round(14*scrn.game_scale))
-pixelfont_title = pygame.font.Font(r"recources/fonts/Minecraft.ttf", round(22*scrn.game_scale))
+pixelfont = pygame.font.Font(r"recources/fonts/Minecraftia.ttf", round(10*scrn.game_scale))
+pixelfont_title = pygame.font.Font(r"recources/fonts/Minecraftia.ttf", round(24*scrn.game_scale))
 
 #load images
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
@@ -108,10 +115,25 @@ settings_btn_pressed = get_image(buttons, 1, 4, 32, 32, scrn.game_scale)
 #load texts
 texts = None
 
-with open("settings.json", "r", encoding="utf-8") as file:
-        settigs = json.load(file)
-        texts_path = settigs["lang"]
+def load_texts():
+    global texts
+    with open("settings.json", "r", encoding="utf-8") as file:
+            settigs = json.load(file)
+            texts_path = settigs["lang"]
 
-        with open(texts_path, "r", encoding="utf-8") as lang_file:
-            lang = json.load(lang_file)
-            texts = lang["txt"]
+            with open(texts_path, "r", encoding="utf-8") as lang_file:
+                lang = json.load(lang_file)
+                texts = lang["txt"]
+
+load_texts()
+
+#create language list
+language_list = []
+language_folder = "languages"
+
+for file_name in os.listdir(language_folder):
+    file_path = os.path.join(language_folder, file_name)
+    
+    # Prüfen, ob es wirklich eine Datei ist (kein Unterordner)
+    if os.path.isfile(file_path):
+        language_list.append(file_path)

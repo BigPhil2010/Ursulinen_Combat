@@ -136,7 +136,7 @@ def open():
 
         #draw start btn
         scrn.screen.blit(start_btn, start_btn_rect)
-        scrn.screen.blit(G.text_to_img(G.texts["start"], G.pixelfont, G.black, 64, 32, scrn.game_scale), start_btn_rect)#
+        scrn.screen.blit(G.text_to_img(G.texts["start"], G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), start_btn_rect)
 
         #draw settings btn
         scrn.screen.blit(settings_btn, settings_btn_rect)

@@ -1,0 +1,22 @@
+{
+  "name": "DE",
+  "txt": {
+    "choose": "Wähle deinen Charakter.",
+    "start": "Start",
+    "P1_won": "Spieler 1 hat gewonnen!",
+    "P2_won": "Spieler 2 hat gewonnen!",
+    "draw": "Unentschieden!",
+    "new": "Neu",
+    "quit": "Beenden",
+    "save": "Speichern",
+    "lang": "Sprache",
+    "scale": "Skalierung",
+    "keys1": "Spieler 1",
+    "keys2": "Spieler 2",
+    "jump": "Springen",
+    "hit": "Schlagen",
+    "left": "Links",
+    "right": "Rechts",
+    "press": "(Drücken)"
+  }
+}

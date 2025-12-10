@@ -1,22 +1,22 @@
 {
-    "name": "English(US)",
-    "txt":{
-        "choose": "Choose your character.",
-        "start": "start",
-        "P1_won": "Player 1 won!",
-        "P2_won": "Player 2 won!",
-        "draw": "It's a draw!",
-        "new": "new",
-        "quit": "quit",
-        "save": "save",
-        "lang": "language",
-        "scale": "scale",
-        "keys1": "P1 keys",
-        "keys2": "P2 keys",
-        "jump": "jump",
-        "hit": "hit",
-        "left": "left",
-        "right": "right",
-        "press": "(press)"
-    }
+  "name": "US",
+  "txt": {
+    "choose": "Choose your character.",
+    "start": "Start",
+    "P1_won": "Player 1 has won!",
+    "P2_won": "Player 2 has won!",
+    "draw": "It's a draw!",
+    "new": "New",
+    "quit": "Quit",
+    "save": "Save",
+    "lang": "Language",
+    "scale": "Scale",
+    "keys1": "Player 1",
+    "keys2": "Player 2",
+    "jump": "Jump",
+    "hit": "Hit",
+    "left": "Left",
+    "right": "Right",
+    "press": "(Press)"
+  }
 }

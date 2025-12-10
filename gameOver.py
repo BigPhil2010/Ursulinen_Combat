@@ -53,10 +53,10 @@ def gameOver(winner):
 
         #draw btns
         scrn.screen.blit(newGame_btn, newGame_btn_rect)
-        scrn.screen.blit(G.text_to_img(G.texts["new"], G.pixelfont, G.black, 64, 32, scrn.game_scale), newGame_btn_rect)
+        scrn.screen.blit(G.text_to_img(G.texts["new"], G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), newGame_btn_rect)
 
         scrn.screen.blit(quit_btn, quit_btn_rect)
-        scrn.screen.blit(G.text_to_img(G.texts["quit"], G.pixelfont, G.black, 64, 32, scrn.game_scale), quit_btn_rect)
+        scrn.screen.blit(G.text_to_img(G.texts["quit"], G.pixelfont, G.btn_txt_color, 64, 32, scrn.game_scale), quit_btn_rect)
 
         #draw title
         scrn.screen.blit(G.text_to_img(title, G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
