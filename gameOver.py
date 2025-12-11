@@ -51,6 +51,7 @@ def gameOver(winner):
     ######################### LOOP #########################
     while run:
         scrn.screen.fill(G.background_color)
+        scrn.screen.blit(G.get_image(G.menu_BG, 0, 0, 256, 128, scrn.game_scale*2), (0,0))
 
         #draw btns
         scrn.screen.blit(newGame_btn, newGame_btn_rect)

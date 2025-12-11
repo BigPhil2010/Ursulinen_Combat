@@ -304,8 +304,8 @@ def set():
 
     ######################### LOOP #########################
     while run:
-        
         scrn.screen.fill(G.background_color)
+        scrn.screen.blit(G.get_image(G.menu_BG, 0, 0, 256, 128, scrn.game_scale*2), (0,0))
 
         #draw btns
         scrn.screen.blit(save_btn, save_btn_rect)

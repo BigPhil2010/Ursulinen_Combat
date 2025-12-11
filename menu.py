@@ -125,6 +125,7 @@ def open():
     ######################### LOOP #########################
     while run:
         scrn.screen.fill(G.background_color)
+        scrn.screen.blit(G.get_image(G.menu_BG, 0, 0, 256, 128, scrn.game_scale*2), (0,0))
 
         #draw selection buttons
         scrn.screen.blit(P1_btn_left, P1_btn_left_rect)

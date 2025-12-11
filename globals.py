@@ -87,6 +87,8 @@ pixelfont_title = pygame.font.Font(r"recources/fonts/Minecraftia.ttf", round(24*
 test_overlay = pygame.image.load(r"recources/images/overlays/png/Test_Overlay.png")
 standard_overlay = pygame.image.load(r"recources/images/overlays/png/Standard_Overlay.png")
 
+menu_BG = pygame.image.load(r"recources/images/GUI/png/menu_background.png")
+
 #load btn images
 buttons = pygame.image.load(r"recources/images/GUI/png/buttons.png")
 
