@@ -11,3 +11,5 @@ Lehrer treten in spannenden Kämpfen gegeneinander an – jeder mit einzigartige
 - **Steuerung:** Frei konfigurierbare Tastenbelegung.
 - **Sprachen:** Mehrsprachige Unterstützung für verschiedene Nutzergruppen.
 - **Gameplay:** Dynamische Kämpfe mit unterschiedlichen Strategien und Spielstilen.
+
+- sound von dominik https://pixabay.com/de/sound-effects/search/background%20music/
