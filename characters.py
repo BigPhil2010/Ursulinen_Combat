@@ -71,7 +71,7 @@ KIEN = {
     "sprite_sheet_layout": spritesheet_LO_KIEN,
     "animation": "run",
     "hit": False,
-    "damage": 0.4,
+    "damage": 0.5,
     "damage_done": False,
     #animations
     "run": [],
@@ -92,7 +92,7 @@ KIEN = {
     "collision_bottom": False,
     "collision_left": False,
     "collision_right": False,
-    "speed": 0.7,
+    "speed": 0.85,
     "gravity": 1,
     "jump_power": 1,
     "jump_frames": 30,
@@ -107,11 +107,11 @@ spritesheet_LO_MUTK = {
     "idle": [[0, 1, 1, 1], 5, True],
     "jump": [[0, 3, 5, 3], 5, False],
     "hit_run": [[0, 4, 6, 4], 15, False],
-    "hit_idle": [[0, 2, 7, 2], 5, False],
+    "hit_idle": [[0, 2, 7, 2], 20, False],
 }
 
 MUTK = {
-    "name": "Kienast",
+    "name": "Mutke",
     "hp": 100,
     "hp_bar": None,
     "sprite": None,
@@ -120,7 +120,7 @@ MUTK = {
     "sprite_sheet_layout": spritesheet_LO_MUTK,
     "animation": "run",
     "hit": False,
-    "damage": 0.4,
+    "damage": 10,
     "damage_done": False,
     #animations
     "run": [],
@@ -129,7 +129,7 @@ MUTK = {
     "hit_run": [],
     "hit_idle": [],
     "frame": 0,
-    "cooldown": 50,
+    "cooldown": 30,
     "cooldown_count": 0,
     "looking_left": None,
     "keyset": None,

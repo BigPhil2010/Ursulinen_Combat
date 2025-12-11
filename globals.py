@@ -76,7 +76,7 @@ def lang_path_to_name(path):
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 255, 0)
-btn_txt_color = (0, 0, 0)
+btn_txt_color = white
 background_color = (200, 200, 200)
 
 #load fonts

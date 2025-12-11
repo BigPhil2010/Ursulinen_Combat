@@ -1,0 +1,22 @@
+{
+  "name": "NL",
+  "txt": {
+    "choose": "Kies je karakter.",
+    "start": "Start",
+    "P1_won": "Speler 1 heeft gewonnen!",
+    "P2_won": "Speler 2 heeft gewonnen!",
+    "draw": "Gelijkspel!",
+    "new": "Nieuw",
+    "quit": "Afsluiten",
+    "save": "Opslaan",
+    "lang": "Taal",
+    "scale": "Schaal",
+    "keys1": "Speler 1 toetsen",
+    "keys2": "Speler 2 toetsen",
+    "jump": "Springen",
+    "hit": "Slaan",
+    "left": "Links",
+    "right": "Rechts",
+    "press": "(Drukken)"
+  }
+}
