@@ -109,8 +109,13 @@ settings_btn = get_image(buttons, 0, 4, 32, 32, scrn.game_scale)
 settings_btn_pressed = get_image(buttons, 1, 4, 32, 32, scrn.game_scale)
 
 #load sounds
-#sound = pygame.mixer.Sound("")
-#sound.play()
+pygame.mixer.init()
+click = pygame.mixer.Sound("recources/sounds/mouse-click.wav")
+hurt = pygame.mixer.Sound("recources/sounds/mc-hurt.wav")
+
+BG_music = pygame.mixer.Sound("recources/sounds/background-music.mp3")
+
+BG_music.play(loops=-1)
 
 #load texts
 texts = None

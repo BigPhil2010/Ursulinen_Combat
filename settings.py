@@ -5,7 +5,7 @@ import screen as scrn
 import menu
 
 pygame.init()
-pygame.mixer.init()
+
 def set():
     ######################### VARIABLES #########################
     settings = None
@@ -252,6 +252,7 @@ def set():
         lang_txt = str(G.lang_path_to_name(settings["lang"]))
 
     def btn_pressed(btn):
+        G.click.play()
         nonlocal save_btn
         nonlocal scale_up_btn
         nonlocal scale_down_btn

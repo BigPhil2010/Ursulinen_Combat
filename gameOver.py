@@ -35,6 +35,7 @@ def gameOver(winner):
     ######################### FUNCTIONS #########################
 
     def btn_pressed(btn):
+        G.click.play()
         nonlocal newGame_btn
         nonlocal quit_btn
         nonlocal run

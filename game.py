@@ -8,7 +8,6 @@ import screen as scrn
 import gameOver
 
 pygame.init()
-pygame.mixer.init()
 
 
 def start(P1, P2, Map, game_duration):
@@ -149,6 +148,11 @@ def start(P1, P2, Map, game_duration):
             if can_hit(player, enemy):
                 player["damage_done"] = True
                 enemy["hp"] -= player["damage"]
+                if player["name"] == "Kienast":
+                    if enemy["hp"] % 10 == 0:
+                        G.hurt.play()
+                else:
+                    G.hurt.play()
                 if enemy["hp"] <= 0:
                     game_over(player)
 

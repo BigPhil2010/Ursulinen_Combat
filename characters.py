@@ -120,7 +120,7 @@ MUTK = {
     "sprite_sheet_layout": spritesheet_LO_MUTK,
     "animation": "run",
     "hit": False,
-    "damage": 10,
+    "damage": 15,
     "damage_done": False,
     #animations
     "run": [],

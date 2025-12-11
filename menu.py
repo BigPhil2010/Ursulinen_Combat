@@ -85,6 +85,7 @@ def open():
         game.start(list(characters.character_list)[P1], list(characters.character_list)[P2], maps.random_map(), 119)
 
     def btn_pressed(btn):
+        G.click.play()
         nonlocal P1_btn_left
         nonlocal P1_btn_right
         nonlocal P2_btn_left
