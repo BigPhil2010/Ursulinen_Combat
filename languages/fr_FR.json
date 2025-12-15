@@ -1,0 +1,22 @@
+{
+  "name": "FR",
+  "txt": {
+    "choose": "Choisis ton personnage.",
+    "start": "Démarrer",
+    "P1_won": "Le joueur 1 a gagné !",
+    "P2_won": "Le joueur 2 a gagné !",
+    "draw": "Match nul !",
+    "new": "Nouveau",
+    "quit": "Quitter",
+    "save": "Sauvegarder",
+    "lang": "Langue",
+    "scale": "Échelle",
+    "keys1": "Joueur 1",
+    "keys2": "Joueur 2",
+    "jump": "Sauter",
+    "hit": "Frapper",
+    "left": "Gauche",
+    "right": "Droite",
+    "press": "(Appuyer)"
+  }
+}
