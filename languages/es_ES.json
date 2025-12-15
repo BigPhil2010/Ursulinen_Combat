@@ -1,0 +1,22 @@
+{
+  "name": "ES",
+  "txt": {
+    "choose": "Elige tu personaje.",
+    "start": "Iniciar",
+    "P1_won": "¡El jugador 1 ha ganado!",
+    "P2_won": "¡El jugador 2 ha ganado!",
+    "draw": "¡Empate!",
+    "new": "Nuevo",
+    "quit": "Salir",
+    "save": "Guardar",
+    "lang": "Idioma",
+    "scale": "Escala",
+    "keys1": "Jugador 1",
+    "keys2": "Jugador 2",
+    "jump": "Saltar",
+    "hit": "Golpear",
+    "left": "Izquierda",
+    "right": "Derecha",
+    "press": "(Presionar)"
+  }
+}
