@@ -1,0 +1,22 @@
+{
+  "name": "LA",
+  "txt": {
+    "choose": "Elige personam tuam.",
+    "start": "Incipe",
+    "P1_won": "Lusor I vicit!",
+    "P2_won": "Lusor II vicit!",
+    "draw": "Par est!",
+    "new": "Novum",
+    "quit": "Exi",
+    "save": "Serva",
+    "lang": "Lingua",
+    "scale": "Scala",
+    "keys1": "Lusor I",
+    "keys2": "Lusor II",
+    "jump": "Salta",
+    "hit": "Percute",
+    "left": "Sinistra",
+    "right": "Dextera",
+    "press": "(Preme)"
+  }
+}
