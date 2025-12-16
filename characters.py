@@ -148,9 +148,108 @@ MUTK = {
     "jump_frames_count": 0
 }
 
+##########Hammes##########
+
+spritesheet_LO_HMMS = {
+    "run": [[0, 0, 7, 0], 15, True],
+    "idle": [[0, 1, 1, 1], 5, True],
+    "jump": [[0, 3, 5, 3], 5, False],
+    "hit_run": [[0, 4, 7, 4], 25, False],
+    "hit_idle": [[0, 2, 7, 2], 20, False],
+}
+
+HMMS = {
+    "name": "Hammes",
+    "hp": 100,
+    "hp_bar": None,
+    "sprite": None,
+    "flipped_sprite": None,
+    "sprite_sheet": pygame.image.load(recources/images/sprites/png/Hammes.png),
+    "sprite_sheet_layout": spritesheet_LO_HMMS,
+    "animation": "run",
+    "hit": False,
+    "damage": 10,
+    "damage_done": False,
+    #animations
+    "run": [],
+    "idle": [],
+    "jump": [],
+    "hit_run": [],
+    "hit_idle": [],
+    "frame": 0,
+    "cooldown": 30,
+    "cooldown_count": 0,
+    "looking_left": None,
+    "keyset": None,
+    "rect": None,
+    "start_x": None,
+    "start_y": None,
+    "width": 32,
+    "height": 32,
+    "collision_bottom": False,
+    "collision_left": False,
+    "collision_right": False,
+    "speed": 1,
+    "gravity": 1,
+    "jump_power": 1,
+    "jump_frames": 30,
+    "jump_frames_count": 0
+}
+
+##########Hamme##########
+
+spritesheet_LO_HMME = {
+    "run": [[0, 0, 7, 0], 15, True],
+    "idle": [[0, 1, 1, 1], 5, True],
+    "jump": [[0, 3, 5, 3], 5, False],
+    "hit_run": [[0, 4, 7, 4], 25, False],
+    "hit_idle": [[0, 2, 7, 2], 20, False],
+}
+
+HMME = {
+    "name": "Hamme",
+    "hp": 100,
+    "hp_bar": None,
+    "sprite": None,
+    "flipped_sprite": None,
+    "sprite_sheet": pygame.image.load(recources/images/sprites/png/Hamme.png),
+    "sprite_sheet_layout": spritesheet_LO_HMME,
+    "animation": "run",
+    "hit": False,
+    "damage": 10,
+    "damage_done": False,
+    #animations
+    "run": [],
+    "idle": [],
+    "jump": [],
+    "hit_run": [],
+    "hit_idle": [],
+    "frame": 0,
+    "cooldown": 30,
+    "cooldown_count": 0,
+    "looking_left": None,
+    "keyset": None,
+    "rect": None,
+    "start_x": None,
+    "start_y": None,
+    "width": 32,
+    "height": 32,
+    "collision_bottom": False,
+    "collision_left": False,
+    "collision_right": False,
+    "speed": 1,
+    "gravity": 1,
+    "jump_power": 1,
+    "jump_frames": 30,
+    "jump_frames_count": 0
+}
+
+
 ##########LIST##########
 character_list = {
     "RITT": RITT,
     "KIEN": KIEN,
-    "MUTK": MUTK
+    "MUTK": MUTK,
+    "HMMS": HMMS,
+    "HMME": HMME
 }
