@@ -300,9 +300,6 @@ def start(P1, P2, Map, game_duration):
         scrn.screen.fill(G.white)
         scrn.screen.blit(BG, (0, 0))
 
-        for plattform in plattforms:
-            pygame.draw.rect(scrn.screen, (0,0,0), plattform)
-
         #draw players
         if player1["looking_left"]:
             scrn.screen.blit(player1["flipped_sprite"], (player1["rect"]))

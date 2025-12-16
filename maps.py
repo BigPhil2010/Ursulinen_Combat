@@ -71,4 +71,4 @@ maps_list = {
 def random_map():
     index = random.randint(0, len(list(maps_list))-1)
     map_name = list(maps_list)[index]
-    return "sporthalle"#map_name
+    return map_name
