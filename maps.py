@@ -49,8 +49,9 @@ sporthalle = {
                     pygame.Rect(-1, 0, 1, 256),
                     pygame.Rect(513, 0, 1, 256),
 
-                    pygame.Rect(295, 177, 60, 1),
-                    pygame.Rect(400, 220, 60, 1)
+                    pygame.Rect(294, 168, 60, 1),
+                    pygame.Rect(400, 220, 60, 1),
+                    pygame.Rect(194, 88, 40, 1)
                 ],
     "P1_start_x": 0,
     "P1_start_y": 0,
@@ -70,4 +71,4 @@ maps_list = {
 def random_map():
     index = random.randint(0, len(list(maps_list))-1)
     map_name = list(maps_list)[index]
-    return map_name
+    return "sporthalle"#map_name
