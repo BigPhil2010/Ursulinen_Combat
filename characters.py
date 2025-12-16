@@ -244,6 +244,54 @@ HAM = {
     "jump_frames_count": 0
 }
 
+##########Polhout##########
+
+spritesheet_LO_POL = {
+    "run": [[0, 0, 7, 0], 15, True],
+    "idle": [[0, 1, 1, 1], 5, True],
+    "jump": [[0, 3, 5, 3], 5, False],
+    "hit_run": [[0, 4, 7, 4], 15, False],
+    "hit_idle": [[0, 2, 7, 2], 10, False],
+}
+
+POL = {
+    "name": "Polhout",
+    "hp": 100,
+    "hp_bar": None,
+    "sprite": None,
+    "flipped_sprite": None,
+    "sprite_sheet": pygame.image.load(r"recources/images/sprites/png/Polhout.png"),
+    "sprite_sheet_layout": spritesheet_LO_POL,
+    "animation": "run",
+    "hit": False,
+    "damage": 0.5,
+    "damage_done": False,
+    #animations
+    "run": [],
+    "idle": [],
+    "jump": [],
+    "hit_run": [],
+    "hit_idle": [],
+    "frame": 0,
+    "cooldown": 0,
+    "cooldown_count": 0,
+    "looking_left": None,
+    "keyset": None,
+    "rect": None,
+    "start_x": None,
+    "start_y": None,
+    "width": 32,
+    "height": 32,
+    "collision_bottom": False,
+    "collision_left": False,
+    "collision_right": False,
+    "speed": 1,
+    "gravity": 1,
+    "jump_power": 1,
+    "jump_frames": 30,
+    "jump_frames_count": 0
+}
+
 
 ##########LIST##########
 character_list = {
@@ -251,5 +299,6 @@ character_list = {
     "KIEN": KIEN,
     "MUTK": MUTK,
     "HAMS": HAMS,
-    "HAM": HAM
+    "HAM": HAM,
+    "POL": POL
 }

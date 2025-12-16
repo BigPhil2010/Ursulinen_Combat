@@ -148,7 +148,7 @@ def start(P1, P2, Map, game_duration):
             if can_hit(player, enemy):
                 player["damage_done"] = True
                 enemy["hp"] -= player["damage"]
-                if player["name"] == "Kienast" or player["name"] == "Hamme":
+                if player["name"] == "Kienast" or player["name"] == "Hamme" or player["name"] == "Polhout":
                     if enemy["hp"] % 10 == 0:
                         G.hurt.play()
                 else:
