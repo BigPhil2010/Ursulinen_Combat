@@ -146,6 +146,10 @@ def open():
         #draw title
         scrn.screen.blit(G.text_to_img(G.texts["choose"], G.pixelfont_title, G.black, 512, 64, scrn.game_scale), (0, 32*scrn.game_scale))
 
+        #draw player names
+        scrn.screen.blit(G.text_to_img(P1_character["name"], G.pixelfont, G.black, 128, 32, scrn.game_scale), (96*scrn.game_scale, 160*scrn.game_scale))
+        scrn.screen.blit(G.text_to_img(P2_character["name"], G.pixelfont, G.black, 128, 32, scrn.game_scale), (288*scrn.game_scale, 160*scrn.game_scale))
+
         #update players
         P1_character = characters.character_list[list(characters.character_list)[P1]]
         G.set_sprites(P1_character,"idle", 1.5*scrn.game_scale)
