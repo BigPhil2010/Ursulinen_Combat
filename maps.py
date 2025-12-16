@@ -40,10 +40,31 @@ klassenzimmer = {
     "gravity": 3
 }
 
+sporthalle = {
+    "background": pygame.image.load(r"recources/images/backgrounds/png/Sporthalle.png"),
+    "background_scale": 2,
+    "plattforms": [
+                    pygame.Rect(0, 256, 512, 12),
+                    pygame.Rect(0, -1, 512, 1),
+                    pygame.Rect(-1, 0, 1, 256),
+                    pygame.Rect(513, 0, 1, 256),
+
+                    pygame.Rect(295, 177, 60, 1),
+                    pygame.Rect(400, 220, 60, 1)
+                ],
+    "P1_start_x": 0,
+    "P1_start_y": 0,
+    "P2_start_x": 480,
+    "P2_start_y": 0,
+    "speed": 2,
+    "gravity": 3
+}
+
 ##########LIST##########
 maps_list = {
     "forum": forum,
-    "klassenzimmer": klassenzimmer
+    "klassenzimmer": klassenzimmer,
+    "sporthalle": sporthalle
 }
 
 def random_map():
