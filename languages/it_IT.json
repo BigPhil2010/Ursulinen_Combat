@@ -1,0 +1,22 @@
+{
+  "name": "it",
+  "txt": {
+    "choose": "Scegli il tuo personaggio.",
+    "start": "Avvia",
+    "P1_won": "Il giocatore 1 ha vinto!",
+    "P2_won": "Il giocatore 2 ha vinto!",
+    "draw": "Pareggio!",
+    "new": "Nuovo",
+    "quit": "Esci",
+    "save": "Salva",
+    "lang": "Lingua",
+    "scale": "Scala",
+    "keys1": "Giocatore 1",
+    "keys2": "Giocatore 2",
+    "jump": "Salta",
+    "hit": "Colpisci",
+    "left": "Sinistra",
+    "right": "Destra",
+    "press": "(Premi)"
+  }
+}
