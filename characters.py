@@ -150,7 +150,7 @@ MUTK = {
 
 ##########Hammes##########
 
-spritesheet_LO_HMMS = {
+spritesheet_LO_HAMS = {
     "run": [[0, 0, 7, 0], 15, True],
     "idle": [[0, 1, 1, 1], 5, True],
     "jump": [[0, 3, 5, 3], 5, False],
@@ -158,17 +158,17 @@ spritesheet_LO_HMMS = {
     "hit_idle": [[0, 2, 7, 2], 20, False],
 }
 
-HMMS = {
+HAMS = {
     "name": "Hammes",
     "hp": 100,
     "hp_bar": None,
     "sprite": None,
     "flipped_sprite": None,
-    "sprite_sheet": pygame.image.load(recources/images/sprites/png/Hammes.png),
-    "sprite_sheet_layout": spritesheet_LO_HMMS,
+    "sprite_sheet": pygame.image.load(r"recources/images/sprites/png/Hammes.png"),
+    "sprite_sheet_layout": spritesheet_LO_HAMS,
     "animation": "run",
     "hit": False,
-    "damage": 10,
+    "damage": 8.5,
     "damage_done": False,
     #animations
     "run": [],
@@ -189,7 +189,7 @@ HMMS = {
     "collision_bottom": False,
     "collision_left": False,
     "collision_right": False,
-    "speed": 1,
+    "speed": 1.1,
     "gravity": 1,
     "jump_power": 1,
     "jump_frames": 30,
@@ -198,7 +198,7 @@ HMMS = {
 
 ##########Hamme##########
 
-spritesheet_LO_HMME = {
+spritesheet_LO_HAM = {
     "run": [[0, 0, 7, 0], 15, True],
     "idle": [[0, 1, 1, 1], 5, True],
     "jump": [[0, 3, 5, 3], 5, False],
@@ -206,17 +206,17 @@ spritesheet_LO_HMME = {
     "hit_idle": [[0, 2, 7, 2], 20, False],
 }
 
-HMME = {
+HAM = {
     "name": "Hamme",
     "hp": 100,
     "hp_bar": None,
     "sprite": None,
     "flipped_sprite": None,
-    "sprite_sheet": pygame.image.load(recources/images/sprites/png/Hamme.png),
-    "sprite_sheet_layout": spritesheet_LO_HMME,
+    "sprite_sheet": pygame.image.load(r"recources/images/sprites/png/Hamme.png"),
+    "sprite_sheet_layout": spritesheet_LO_HAM,
     "animation": "run",
     "hit": False,
-    "damage": 10,
+    "damage": 0.5,
     "damage_done": False,
     #animations
     "run": [],
@@ -225,7 +225,7 @@ HMME = {
     "hit_run": [],
     "hit_idle": [],
     "frame": 0,
-    "cooldown": 30,
+    "cooldown": 0,
     "cooldown_count": 0,
     "looking_left": None,
     "keyset": None,
@@ -250,6 +250,6 @@ character_list = {
     "RITT": RITT,
     "KIEN": KIEN,
     "MUTK": MUTK,
-    "HMMS": HMMS,
-    "HMME": HMME
+    "HAMS": HAMS,
+    "HAM": HAM
 }
